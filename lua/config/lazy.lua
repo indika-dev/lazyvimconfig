@@ -5,6 +5,11 @@ if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({ "git", "clone", "--filter=blob:none", "https://github.com/folke/lazy.nvim.git", "--branch=stable", lazypath })
 end
 vim.opt.rtp:prepend(vim.env.LAZY or lazypath)
+if "stefan" == vim.env.USER then
+  vim.opt.rtp:append("/usr/bin/fzf")
+else
+  vim.opt.rtp:append("/home/linuxbrew/.linuxbrew/opt/fzf")
+end
 
 require("lazy").setup({
   spec = {
@@ -12,7 +17,6 @@ require("lazy").setup({
     { "LazyVim/LazyVim", import = "lazyvim.plugins" },
     -- import any extras modules here
     -- { import = "lazyvim.plugins.extras.lang.typescript" },
-    -- { import = "lazyvim.plugins.extras.lang.json" },
     -- { import = "lazyvim.plugins.extras.ui.mini-animate" },
     -- import/override with your plugins
     { import = "plugins" },
@@ -26,7 +30,7 @@ require("lazy").setup({
     version = false, -- always use the latest git commit
     -- version = "*", -- try installing the latest stable version for plugins that support semver
   },
-  install = { colorscheme = { "tokyonight", "habamax" } },
+  install = { colorscheme = { "kanagawa" } },
   checker = { enabled = true }, -- automatically check for plugin updates
   performance = {
     rtp = {
@@ -35,7 +39,8 @@ require("lazy").setup({
         "gzip",
         -- "matchit",
         -- "matchparen",
-        -- "netrwPlugin",
+        "netrwPlugin",
+        "rplugin",
         "tarPlugin",
         "tohtml",
         "tutor",
