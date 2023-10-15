@@ -1,3 +1,16 @@
+local colorscheme = function()
+  local _time = os.date("*t")
+  if _time.hour >= 6 and _time.hour < 20 then
+    if "stefan" == vim.env.USER then
+      return "kanagawa-lotus"
+    else
+      return "kanagawa"
+    end
+  else
+    return "kanagawa-dragon"
+  end
+end
+
 return {
   -- add kanagawa
   {
@@ -32,7 +45,7 @@ return {
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "kanagawa",
+      colorscheme = colorscheme(),
     },
   },
 }

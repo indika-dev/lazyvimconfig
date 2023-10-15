@@ -120,7 +120,24 @@ return {
         project_name = function(root_dir)
           return root_dir and vim.fs.basename(root_dir)
         end,
-
+        config_os = function()
+          if vim.fn.has("mac") == 1 then
+            return "mac"
+          elseif vim.fn.has("unix") == 1 then
+            return "linux"
+          elseif vim.fn.has("win32") == 1 then
+            return "win"
+          else
+            vim.notify("Unsupported system", vim.log.levels.ERROR)
+            return
+          end
+        end,
+        launcher_path = function(jdtls_install_path)
+          return vim.fn.glob(jdtls_install_path .. "/plugins/org.eclipse.equinox.launcher_*.jar")
+        end,
+        java_home = function()
+          return vim.env.HOME .. "/.local/lib/jvm-17"
+        end,
         -- Where are the config and workspace dirs for a project?
         jdtls_config_dir = function(project_name)
           return vim.fn.stdpath("cache") .. "/jdtls/" .. project_name .. "/config"
@@ -133,68 +150,66 @@ return {
         end,
         jdtls = config,
         cmd = { "jdtls" },
-        full_cmd = function(opts)
-          local fname = vim.api.nvim_buf_get_name(0)
-          local root_dir = opts.root_dir(fname)
-          local project_name = opts.project_name(root_dir)
-          local cmd = vim.deepcopy(opts.cmd)
-          if project_name then
-            vim.list_extend(cmd, {
-              "-configuration",
-              opts.jdtls_config_dir(project_name),
-              "-data",
-              opts.jdtls_workspace_dir(project_name),
-              "--jvm-arg=-javaagent:" .. opts.jdtls_install_path() .. "/lombok.jar",
-            })
-          end
-          return cmd
-        end,
-        -- How to run jdtls. This can be overridden to a full java command-line
-        -- if the Python wrapper script doesn't suffice.
-        -- cmd = {
-        --   vim.env.HOME .. "/.local/lib/jvm-17" .. "/bin/java",
-        -- },
         -- full_cmd = function(opts)
         --   local fname = vim.api.nvim_buf_get_name(0)
         --   local root_dir = opts.root_dir(fname)
         --   local project_name = opts.project_name(root_dir)
         --   local cmd = vim.deepcopy(opts.cmd)
-        --   local config_path = opts.jdtls_install_path() .. "/config_" .. opts.config_os()
-        --   local jdtls_install_path = opts.jdtls_install_path()
-        --   local launcher_path = opts.launcher_path(jdtls_install_path)
-        --   local jdtls_project_config_dir = opts.jdtls_config_dir(project_name)
-        --   local workspace_dir = opts.jdtls_workspace_dir(project_name)
-        -- if project_name then
-        --   vim.list_extend(cmd, {
-        --     "-Declipse.application=org.eclipse.jdt.ls.core.id1",
-        --     "-Dosgi.bundles.defaultStartLevel=4",
-        --     "-Declipse.product=org.eclipse.jdt.ls.core.product",
-        --     "-Dosgi.checkConfiguration=true",
-        --     "-Dosgi.sharedConfiguration.area=" .. config_path,
-        --     "-Dosgi.sharedConfiguration.area.readOnly=true",
-        --     "-Dosgi.configuration.cascaded=true",
-        --     "-XX:+UseParallelGC",
-        --     "-XX:GCTimeRatio=4",
-        --     "-XX:AdaptiveSizePolicyWeight=90",
-        --     "-Dsun.zip.disableMemoryMapping=true",
-        --     "-Xmx1G",
-        --     "-Xms100m",
-        --     "-javaagent:" .. jdtls_install_path .. "/lombok.jar",
-        --     "--add-modules=ALL-SYSTEM",
-        --     "--add-opens",
-        --     "java.base/java.util=ALL-UNNAMED",
-        --     -- "--add-opens",
-        --     -- "java.base/java.lang=ALL-UNNAMED",
-        --     "-jar",
-        --     launcher_path,
-        --     "-data",
-        --     workspace_dir,
-        --     "-configuration",
-        --     jdtls_project_config_dir,
-        --   })
-        -- end
+        --   if project_name then
+        --     vim.list_extend(cmd, {
+        --       "-configuration",
+        --       opts.jdtls_config_dir(project_name),
+        --       "-data",
+        --       opts.jdtls_workspace_dir(project_name),
+        --       "--jvm-arg=-javaagent:" .. opts.jdtls_install_path() .. "/lombok.jar",
+        --     })
+        --   end
         --   return cmd
         -- end,
+        --
+        -- How to run jdtls. This can be overridden to a full java command-line
+        -- if the Python wrapper script doesn't suffice.
+        -- cmd = {
+        --   vim.env.HOME .. "/.local/lib/jvm-17" .. "/bin/java",
+        -- },
+        full_cmd = function(opts)
+          local fname = vim.api.nvim_buf_get_name(0)
+          local root_dir = opts.root_dir(fname)
+          local project_name = opts.project_name(root_dir)
+          local cmd = {}
+          local jdtls_install_path = opts.jdtls_install_path()
+          if project_name then
+            cmd = {
+              opts.java_home() .. "/bin/java",
+              "-Declipse.application=org.eclipse.jdt.ls.core.id1",
+              "-Dosgi.bundles.defaultStartLevel=4",
+              "-Declipse.product=org.eclipse.jdt.ls.core.product",
+              "-Dosgi.checkConfiguration=true",
+              "-Dosgi.sharedConfiguration.area=" .. jdtls_install_path .. "/config_" .. opts.config_os(),
+              "-Dosgi.sharedConfiguration.area.readOnly=true",
+              "-Dosgi.configuration.cascaded=true",
+              "-XX:+UseParallelGC",
+              "-XX:GCTimeRatio=4",
+              "-XX:AdaptiveSizePolicyWeight=90",
+              "-Dsun.zip.disableMemoryMapping=true",
+              "-Xmx1G",
+              "-Xms100m",
+              "-javaagent:" .. jdtls_install_path .. "/lombok.jar",
+              "--add-modules=ALL-SYSTEM",
+              "--add-opens",
+              "java.base/java.util=ALL-UNNAMED",
+              "--add-opens",
+              "java.base/java.lang=ALL-UNNAMED",
+              "-jar",
+              opts.launcher_path(jdtls_install_path),
+              "-data",
+              opts.jdtls_workspace_dir(project_name),
+              "-configuration",
+              opts.jdtls_config_dir(project_name),
+            }
+          end
+          return cmd
+        end,
 
         -- These depend on nvim-dap, but can additionally be disabled by setting false here.
         dap = { hotcodereplace = "auto", config_overrides = {} },
