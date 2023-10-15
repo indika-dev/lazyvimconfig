@@ -19,4 +19,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end
   end,
 })
+vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+  pattern = { "*.java", "*.rs", "*.js", "*.ts" },
+  callback = function(args)
+    local _, _ = pcall(vim.lsp.codelens.refresh)
+  end,
+})
 -- end
