@@ -8,3 +8,4 @@ foo.*
 data
 session/
 nlsp-settings/jdtls.json
+lazy-lock.json
