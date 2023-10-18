@@ -106,6 +106,14 @@ return {
           bundles = bundles(),
           extendedClientCapabilities = extendedClientCapabilities(),
         },
+        -- handlers = {
+        --   ["language/status"] = function(_, result)
+        --     -- Print or whatever.
+        --   end,
+        --   ["$/progress"] = function(_, result, ctx)
+        --     -- disable progress updates.
+        --   end,
+        -- },
         on_attach = function()
           local _, _ = pcall(vim.lsp.codelens.refresh)
         end,
