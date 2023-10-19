@@ -81,6 +81,7 @@ return {
           resolveAdditionalTextEditsSupport = true,
           classFileContentsSupport = false,
           -- progressReportProvider = false,
+          -- classFileContentsSupport = false,
         }
         if not status_jdtls then
           return std_extended_capbilities
@@ -109,25 +110,25 @@ return {
           bundles = bundles(),
           extendedClientCapabilities = extendedClientCapabilities(),
         },
-        handlers = {
-          -- ["language/status"] = function(_, result)
-          --   -- Print or whatever.
-          -- end,
-          ["$/progress"] = function(error, result, ctx)
-            -- disable progress updates.
-            -- if result.value then
-            --   if result.value.title then
-            --     if
-            --       (result.value.kind == "begin" and result.value.message:find("Building") ~= nil)
-            --       or result.value.kind == "report"
-            --       or result.value.kind == "end"
-            --     then
-            --       return vim.lsp.handlers["$/progress"](error, result, ctx)
-            --     end
-            --   end
-            -- end
-          end,
-        },
+        -- handlers = {
+        -- ["language/status"] = function(_, result)
+        --   -- Print or whatever.
+        -- end,
+        -- ["$/progress"] = function(error, result, ctx)
+        -- disable progress updates.
+        -- if result.value then
+        --   if result.value.title then
+        --     if
+        --       (result.value.kind == "begin" and result.value.message:find("Building") ~= nil)
+        --       or result.value.kind == "report"
+        --       or result.value.kind == "end"
+        --     then
+        --       return vim.lsp.handlers["$/progress"](error, result, ctx)
+        --     end
+        --   end
+        -- end
+        --   end,
+        -- },
         on_attach = function()
           local _, _ = pcall(vim.lsp.codelens.refresh)
         end,
