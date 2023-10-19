@@ -1,3 +1,7 @@
+local is_int = function(n)
+  return (type(n) == "number") and (math.floor(n) == n)
+end
+
 return {
   {
     "mfussenegger/nvim-jdtls",
@@ -73,16 +77,15 @@ return {
       end
       local extendedClientCapabilities = function()
         local status_jdtls, jdtls = pcall(require, "jdtls")
-        if not status_jdtls then
-          return {
-            resolveAdditionalTextEditsSupport = true,
-            classFileContentsSupport = false,
-          }
-        end
-        return vim.tbl_deep_extend("keep", {
+        local std_extended_capbilities = {
           resolveAdditionalTextEditsSupport = true,
           classFileContentsSupport = false,
-        }, jdtls.extendedClientCapabilities)
+          -- progressReportProvider = false,
+        }
+        if not status_jdtls then
+          return std_extended_capbilities
+        end
+        return vim.tbl_deep_extend("keep", std_extended_capbilities, jdtls.extendedClientCapabilities)
       end
       local config = {
         capabilities = {
@@ -106,14 +109,25 @@ return {
           bundles = bundles(),
           extendedClientCapabilities = extendedClientCapabilities(),
         },
-        -- handlers = {
-        --   ["language/status"] = function(_, result)
-        --     -- Print or whatever.
-        --   end,
-        --   ["$/progress"] = function(_, result, ctx)
-        --     -- disable progress updates.
-        --   end,
-        -- },
+        handlers = {
+          -- ["language/status"] = function(_, result)
+          --   -- Print or whatever.
+          -- end,
+          ["$/progress"] = function(error, result, ctx)
+            -- disable progress updates.
+            -- if result.value then
+            --   if result.value.title then
+            --     if
+            --       (result.value.kind == "begin" and result.value.message:find("Building") ~= nil)
+            --       or result.value.kind == "report"
+            --       or result.value.kind == "end"
+            --     then
+            --       return vim.lsp.handlers["$/progress"](error, result, ctx)
+            --     end
+            --   end
+            -- end
+          end,
+        },
         on_attach = function()
           local _, _ = pcall(vim.lsp.codelens.refresh)
         end,
