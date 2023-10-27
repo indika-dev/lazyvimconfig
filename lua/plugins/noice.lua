@@ -15,6 +15,14 @@ return {
           opts = { skip = true },
         },
       },
+      {
+        filter = {
+          event = "BufWrite",
+          kind = "",
+          find = "",
+        },
+        opts = { skip = true },
+      },
     }),
   },
 }
