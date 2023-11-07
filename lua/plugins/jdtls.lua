@@ -1,6 +1,101 @@
 local is_int = function(n)
   return (type(n) == "number") and (math.floor(n) == n)
 end
+local is_windows = vim.loop.os_uname().version:match("Windows")
+local jdtls_join = function(...)
+  sep = vim.loop.os_uname().version:match("Windows") and "\\" or "/"
+  local result = table.concat(vim.tbl_flatten({ ... }), sep):gsub(sep .. "+", sep)
+  return result
+end
+local escape_wildcards = function(path)
+  return path:gsub("([%[%]%?%*])", "\\%1")
+end
+local function path_join(...)
+  return table.concat(vim.tbl_flatten({ ... }), "/")
+end
+local path_exists = function(filename)
+  local stat = vim.loop.fs_stat(filename)
+  return stat and stat.type or false
+end
+local strip_archive_subpath = function(path)
+  -- Matches regex from zip.vim / tar.vim
+  path = vim.fn.substitute(path, "zipfile://\\(.\\{-}\\)::[^\\\\].*$", "\\1", "")
+  path = vim.fn.substitute(path, "tarfile:\\(.\\{-}\\)::.*$", "\\1", "")
+  return path
+end
+local dirname = function(path)
+  local strip_dir_pat = "/([^/]+)$"
+  local strip_sep_pat = "/$"
+  if not path or #path == 0 then
+    return
+  end
+  local result = path:gsub(strip_sep_pat, ""):gsub(strip_dir_pat, "")
+  if #result == 0 then
+    if is_windows then
+      return path:sub(1, 2):upper()
+    else
+      return "/"
+    end
+  end
+  return result
+end
+local function is_fs_root(path)
+  if is_windows then
+    return path:match("^%a:$")
+  else
+    return path == "/"
+  end
+end
+local iterate_parents = function(path)
+  local function it(_, v)
+    if v and not is_fs_root(v) then
+      v = dirname(v)
+    else
+      return
+    end
+    if v and vim.loop.fs_realpath(v) then
+      return v, path
+    else
+      return
+    end
+  end
+  return it, path, path
+end
+local search_ancestors = function(startpath, func)
+  vim.validate({ func = { func, "f" } })
+  if func(startpath) then
+    return startpath
+  end
+  local guard = 100
+  for path in iterate_parents(startpath) do
+    -- Prevent infinite recursion if our algorithm breaks
+    guard = guard - 1
+    if guard == 0 then
+      return
+    end
+
+    if func(path) then
+      return path
+    end
+  end
+end
+
+local root_pattern = function(...)
+  local patterns = vim.tbl_flatten({ ... })
+  local function matcher(path)
+    for _, pattern in ipairs(patterns) do
+      for _, p in ipairs(vim.fn.glob(path_join(escape_wildcards(path), pattern), true, true)) do
+        if path_exists(p) then
+          return path
+        end
+      end
+    end
+  end
+  return function(startpath)
+    startpath = strip_archive_subpath(startpath)
+    return search_ancestors(startpath, matcher)
+  end
+end
 
 return {
   {
@@ -137,11 +232,89 @@ return {
       return {
         -- How to find the root dir for a given filename. The default comes from
         -- lspconfig which provides a function specifically for java projects.
-        root_dir = require("lspconfig.server_configurations.jdtls").default_config.root_dir,
+        root_dir = function(fname)
+          for _, patterns in ipairs({
+            -- Single-module projects
+            {
+              "build.xml", -- Ant
+              "settings.gradle", -- Gradle
+              "settings.gradle.kts", -- Gradle
+            },
+            -- Multi-module projects
+            { "build.gradle", "build.gradle.kts", ".git" },
+          }) do
+            local root = root_pattern(unpack(patterns))(fname)
+            if root then
+              return root
+            end
+          end
+        end,
 
+        -- require("lspconfig.server_configurations.jdtls").default_config.root_dir,
+        -- root_dir = function(bufname)
+        --   local root_markers = { ".git", "mvnw", "gradlew", "pom.xml", "build.gradle", ".project" }
+        --   bufname = bufname or vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf())
+        --   local dirname = vim.fn.fnamemodify(bufname, ":p:h")
+        --   local getparent = function(p)
+        --     return vim.fn.fnamemodify(p, ":h")
+        --   end
+        --   while getparent(dirname) ~= dirname do
+        --     for _, marker in ipairs(root_markers) do
+        --       if vim.loop.fs_stat(jdtls_join(dirname, marker)) then
+        --         return dirname
+        --       end
+        --     end
+        --     dirname = getparent(dirname)
+        --   end
+        --   return dirname
+
+        -- root_markers = {
+        --   -- Single-module projects
+        --   {
+        --     "build.xml", -- Ant
+        --     "pom.xml", -- Maven
+        --     "settings.gradle", -- Gradle
+        --     "settings.gradle.kts", -- Gradle
+        --   },
+        --   -- Multi-module projects
+        --   { "build.gradle", "build.gradle.kts" },
+        -- }
+        -- local root_dir = require("jdtls.setup").find_root(root_markers, fname)
+        -- return root_dir or vim.fn.getcwd()
+        --   for _, patterns in ipairs(root_files) do
+        --     local root = require("lspconfig.util").root_pattern(unpack(patterns))(fname)
+        --     if root then
+        --       return root
+        --     end
+        --   end
+        -- end,
+
+        -- root_dir = function()
+        --   -- Find root of project
+        --   local root_markers = { ".git", "mvnw", "gradlew", "pom.xml", "build.gradle", ".project" }
+        --   local root_dir = require("jdtls.setup").find_root(root_markers)
+        --   if root_dir == "" then
+        --     return
+        --   end
+        -- end,
+        -- root_dir = function(fname)
+        -- for _, patterns in ipairs(root_files) do
+        --   local root = util.root_pattern(unpack(patterns))(fname)
+        --   if root then
+        --     return root
+        --   end
+        -- end
+        -- -- Find root of project
+        --   local root_markers = { ".git", "mvnw", "gradlew", "pom.xml", "build.gradle", ".project" }
+        --   local root_dir = require("jdtls.setup").find_root(root_markers, fname)
+        --   if root_dir == "" then
+        --     return
+        --   end
+        -- end,
+        --
         -- How to find the project name for a given root dir.
         project_name = function(root_dir)
-          return root_dir and vim.fs.basename(root_dir)
+          return root_dir and vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t") -- vim.fs.basename(root_dir)
         end,
         config_os = function()
           if vim.fn.has("mac") == 1 then
@@ -160,6 +333,9 @@ return {
         end,
         java_home = function()
           return vim.env.HOME .. "/.local/lib/jvm-17"
+        end,
+        jdtls_jvm_home = function()
+          return vim.env.HOME .. "/.local/lib/semeru-17"
         end,
         -- Where are the config and workspace dirs for a project?
         jdtls_config_dir = function(project_name)
@@ -203,7 +379,15 @@ return {
           local jdtls_install_path = opts.jdtls_install_path()
           if project_name then
             cmd = {
-              opts.java_home() .. "/bin/java",
+              opts.jdtls_jvm_home() .. "/bin/java",
+              "--add-modules=ALL-SYSTEM",
+              "--add-opens",
+              "java.base/java.util=ALL-UNNAMED",
+              "--add-opens",
+              "java.base/java.lang=ALL-UNNAMED",
+              "--add-opens",
+              "java.base/sun.nio.fs=ALL-UNNAMED",
+              "-noverify",
               "-Declipse.application=org.eclipse.jdt.ls.core.id1",
               "-Dosgi.bundles.defaultStartLevel=4",
               "-Declipse.product=org.eclipse.jdt.ls.core.product",
@@ -211,18 +395,18 @@ return {
               "-Dosgi.sharedConfiguration.area=" .. jdtls_install_path .. "/config_" .. opts.config_os(),
               "-Dosgi.sharedConfiguration.area.readOnly=true",
               "-Dosgi.configuration.cascaded=true",
+              "-Djava.import.generatesMetadataFilesAtProjectRoot=false",
+              "-DDetectVMInstallationsJob.disabled=true",
+              '-D"aether.dependencyCollector.impl=bf"',
+              "-Dsun.zip.disableMemoryMapping=true",
               "-XX:+UseParallelGC",
               "-XX:GCTimeRatio=4",
               "-XX:AdaptiveSizePolicyWeight=90",
-              "-Dsun.zip.disableMemoryMapping=true",
+              "-XX:+UseStringDeduplication",
               "-Xmx1G",
               "-Xms100m",
+              "-Xlog:disable",
               "-javaagent:" .. jdtls_install_path .. "/lombok.jar",
-              "--add-modules=ALL-SYSTEM",
-              "--add-opens",
-              "java.base/java.util=ALL-UNNAMED",
-              "--add-opens",
-              "java.base/java.lang=ALL-UNNAMED",
               "-jar",
               opts.launcher_path(jdtls_install_path),
               "-data",
