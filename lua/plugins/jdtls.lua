@@ -1,101 +1,4 @@
-local is_int = function(n)
-  return (type(n) == "number") and (math.floor(n) == n)
-end
-local is_windows = vim.loop.os_uname().version:match("Windows")
-local jdtls_join = function(...)
-  sep = vim.loop.os_uname().version:match("Windows") and "\\" or "/"
-  local result = table.concat(vim.tbl_flatten({ ... }), sep):gsub(sep .. "+", sep)
-  return result
-end
-local escape_wildcards = function(path)
-  return path:gsub("([%[%]%?%*])", "\\%1")
-end
-local function path_join(...)
-  return table.concat(vim.tbl_flatten({ ... }), "/")
-end
-local path_exists = function(filename)
-  local stat = vim.loop.fs_stat(filename)
-  return stat and stat.type or false
-end
-local strip_archive_subpath = function(path)
-  -- Matches regex from zip.vim / tar.vim
-  path = vim.fn.substitute(path, "zipfile://\\(.\\{-}\\)::[^\\\\].*$", "\\1", "")
-  path = vim.fn.substitute(path, "tarfile:\\(.\\{-}\\)::.*$", "\\1", "")
-  return path
-end
-local dirname = function(path)
-  local strip_dir_pat = "/([^/]+)$"
-  local strip_sep_pat = "/$"
-  if not path or #path == 0 then
-    return
-  end
-  local result = path:gsub(strip_sep_pat, ""):gsub(strip_dir_pat, "")
-  if #result == 0 then
-    if is_windows then
-      return path:sub(1, 2):upper()
-    else
-      return "/"
-    end
-  end
-  return result
-end
-local function is_fs_root(path)
-  if is_windows then
-    return path:match("^%a:$")
-  else
-    return path == "/"
-  end
-end
-local iterate_parents = function(path)
-  local function it(_, v)
-    if v and not is_fs_root(v) then
-      v = dirname(v)
-    else
-      return
-    end
-    if v and vim.loop.fs_realpath(v) then
-      return v, path
-    else
-      return
-    end
-  end
-  return it, path, path
-end
-local search_ancestors = function(startpath, func)
-  vim.validate({ func = { func, "f" } })
-  if func(startpath) then
-    return startpath
-  end
-  local guard = 100
-  for path in iterate_parents(startpath) do
-    -- Prevent infinite recursion if our algorithm breaks
-    guard = guard - 1
-    if guard == 0 then
-      return
-    end
-
-    if func(path) then
-      return path
-    end
-  end
-end
-
-local root_pattern = function(...)
-  local patterns = vim.tbl_flatten({ ... })
-  local function matcher(path)
-    for _, pattern in ipairs(patterns) do
-      for _, p in ipairs(vim.fn.glob(path_join(escape_wildcards(path), pattern), true, true)) do
-        if path_exists(p) then
-          return path
-        end
-      end
-    end
-  end
-  return function(startpath)
-    startpath = strip_archive_subpath(startpath)
-    return search_ancestors(startpath, matcher)
-  end
-end
+local jdtls_utils = require("util.jdtlsUtils")
 
 return {
   {
@@ -243,7 +146,7 @@ return {
             -- Multi-module projects
             { "build.gradle", "build.gradle.kts", ".git" },
           }) do
-            local root = root_pattern(unpack(patterns))(fname)
+            local root = jdtls_utils.root_pattern(unpack(patterns))(fname)
             if root then
               return root
             end
