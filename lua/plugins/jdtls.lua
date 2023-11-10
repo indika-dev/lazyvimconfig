@@ -109,6 +109,15 @@ return {
           extendedClientCapabilities = extendedClientCapabilities(),
         },
         -- handlers = {
+        --   ["language/status"] = vim.schedule_wrap(function(error, result, ctx)
+        --     if "ServiceReady" == result.type then
+        --       -- command "LspSettings update jdtls"
+        --       require("jdtls.dap").setup_dap_main_class_configs({
+        --         verbose = true,
+        --         on_ready = function() end,
+        --       })
+        --     end
+        --   end),
         -- ["language/status"] = function(_, result)
         --   -- Print or whatever.
         -- end,
