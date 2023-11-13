@@ -3,7 +3,7 @@ dap.configurations.java = {
   {
     type = "java",
     request = "launch",
-    name = "Debug Shoo init on special repo",
+    name = "Debug Shoo init on test-init",
     args = "-r /home/maassens/workspace/architecture-management/test-init init",
     vmargs = "-Xms2G -Xmx2G",
     mainClass = "de.creditreform.architecture.management.shoo.ui.ShooCli",
@@ -13,8 +13,8 @@ dap.configurations.java = {
   {
     type = "java",
     request = "launch",
-    name = "Debug Shoo pull 'SSO User Management' on special repo",
-    args = '-r /home/maassens/workspace/architecture-management/test-init pull "SSO User Management"',
+    name = "Debug Shoo pull 'Business Adapter BI' on test-init",
+    args = '-t -r /home/maassens/workspace/architecture-management/test-init pull "Business Adapter BI"',
     vmargs = "-Xms2G -Xmx2G",
     mainClass = "de.creditreform.architecture.management.shoo.ui.ShooCli",
     projectName = "shoo-cli",
@@ -23,12 +23,8 @@ dap.configurations.java = {
   {
     type = "java",
     request = "launch",
-    name = "Debug Shoo sync with init",
-    args = '-r /home/maassens/workspace/architecture-management/test-repo -t sync \
-      --init \
-      -c /home/maassens/workspace/architecture-management/ts01_single.toml \
-      -c /home/maassens/workspace/architecture-management/listeItSysteme.html \
-      "TestSystem 01"',
+    name = "Debug Shoo merge 'Business Adapter BI' on test-init",
+    args = '-r /home/maassens/workspace/architecture-management/test-init merge "Business Adapter BI"',
     vmargs = "-Xms2G -Xmx2G",
     mainClass = "de.creditreform.architecture.management.shoo.ui.ShooCli",
     projectName = "shoo-cli",
@@ -37,9 +33,8 @@ dap.configurations.java = {
   {
     type = "java",
     request = "launch",
-    name = "Debug Shoo sync Business Adapter CTA",
-    args = '-r /home/maassens/workspace/architecture-management/test-repo -t sync \
-      "Business Adapter CTA"',
+    name = "Debug Shoo status on test-init",
+    args = "-r /home/maassens/workspace/architecture-management/test-init status",
     vmargs = "-Xms2G -Xmx2G",
     mainClass = "de.creditreform.architecture.management.shoo.ui.ShooCli",
     projectName = "shoo-cli",
@@ -48,8 +43,8 @@ dap.configurations.java = {
   {
     type = "java",
     request = "launch",
-    name = "Debug Shoo pull TestSystem 01",
-    args = '-r /home/maassens/workspace/architecture-management/test-repo -t pull "TestSystem 01"',
+    name = "Debug Shoo add on test-init",
+    args = '-r /home/maassens/workspace/architecture-management/test-init add "Business Adapter BI"',
     vmargs = "-Xms2G -Xmx2G",
     mainClass = "de.creditreform.architecture.management.shoo.ui.ShooCli",
     projectName = "shoo-cli",
@@ -58,8 +53,8 @@ dap.configurations.java = {
   {
     type = "java",
     request = "launch",
-    name = "Debug Shoo pull CrefoTEAM Vertrieb",
-    args = '-r /home/maassens/workspace/architecture-management/test-repo -t pull "CrefoTEAM Vertrieb"',
+    name = "Debug Shoo commit on test-init",
+    args = '-r /home/maassens/workspace/architecture-management/test-init commit "commit to debug"',
     vmargs = "-Xms2G -Xmx2G",
     mainClass = "de.creditreform.architecture.management.shoo.ui.ShooCli",
     projectName = "shoo-cli",
@@ -68,8 +63,8 @@ dap.configurations.java = {
   {
     type = "java",
     request = "launch",
-    name = "Debug Shoo merge TestSystem 01",
-    args = '-r /home/maassens/workspace/architecture-management/test-repo -t merge "TestSystem 01"',
+    name = "Debug Shoo push on test-init",
+    args = "-t -r /home/maassens/workspace/architecture-management/test-init push",
     vmargs = "-Xms2G -Xmx2G",
     mainClass = "de.creditreform.architecture.management.shoo.ui.ShooCli",
     projectName = "shoo-cli",
@@ -78,38 +73,8 @@ dap.configurations.java = {
   {
     type = "java",
     request = "launch",
-    name = "Debug Shoo add TestSystem 01",
-    args = '-r /home/maassens/workspace/architecture-management/test-repo -t add "TestSystem 01"',
-    vmargs = "-Xms2G -Xmx2G",
-    mainClass = "de.creditreform.architecture.management.shoo.ui.ShooCli",
-    projectName = "shoo-cli",
-    console = "integratedTerminal",
-  },
-  {
-    type = "java",
-    request = "launch",
-    name = "Debug Shoo commit",
-    args = '-r /home/maassens/workspace/architecture-management/test-repo -t commit "TestSystem 01"',
-    vmargs = "-Xms2G -Xmx2G",
-    mainClass = "de.creditreform.architecture.management.shoo.ui.ShooCli",
-    projectName = "shoo-cli",
-    console = "integratedTerminal",
-  },
-  {
-    type = "java",
-    request = "launch",
-    name = "Debug Shoo push",
-    args = "-r /home/maassens/workspace/architecture-management/test-repo -t push",
-    vmargs = "-Xms2G -Xmx2G",
-    mainClass = "de.creditreform.architecture.management.shoo.ui.ShooCli",
-    projectName = "shoo-cli",
-    console = "integratedTerminal",
-  },
-  {
-    type = "java",
-    request = "launch",
-    name = "Debug Shoo status",
-    args = "-r /home/maassens/workspace/architecture-management/test-repo -t status",
+    name = "Debug Shoo sync on test-init",
+    args = "-r /home/maassens/workspace/architecture-management/test-init -t sync",
     vmargs = "-Xms2G -Xmx2G",
     mainClass = "de.creditreform.architecture.management.shoo.ui.ShooCli",
     projectName = "shoo-cli",
