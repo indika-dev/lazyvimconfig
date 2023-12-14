@@ -7,7 +7,7 @@ dap.configurations.java = {
     args = "-r /home/maassens/workspace/architecture-management/test-init init",
     vmargs = "-Xms2G -Xmx2G",
     mainClass = "de.creditreform.architecture.management.shoo.ui.ShooCli",
-    projectName = "shoo-cli",
+    projectName = "shoo",
     console = "integratedTerminal",
   },
   {
@@ -17,7 +17,7 @@ dap.configurations.java = {
     args = '-t -r /home/maassens/workspace/architecture-management/test-init pull "Business Adapter BI"',
     vmargs = "-Xms2G -Xmx2G",
     mainClass = "de.creditreform.architecture.management.shoo.ui.ShooCli",
-    projectName = "shoo-cli",
+    projectName = "shoo",
     console = "integratedTerminal",
   },
   {
@@ -27,7 +27,7 @@ dap.configurations.java = {
     args = '-r /home/maassens/workspace/architecture-management/test-init merge "Business Adapter BI"',
     vmargs = "-Xms2G -Xmx2G",
     mainClass = "de.creditreform.architecture.management.shoo.ui.ShooCli",
-    projectName = "shoo-cli",
+    projectName = "shoo",
     console = "integratedTerminal",
   },
   {
@@ -37,7 +37,7 @@ dap.configurations.java = {
     args = "-r /home/maassens/workspace/architecture-management/test-init status",
     vmargs = "-Xms2G -Xmx2G",
     mainClass = "de.creditreform.architecture.management.shoo.ui.ShooCli",
-    projectName = "shoo-cli",
+    projectName = "shoo",
     console = "integratedTerminal",
   },
   {
@@ -47,7 +47,7 @@ dap.configurations.java = {
     args = '-r /home/maassens/workspace/architecture-management/test-init add "Business Adapter BI"',
     vmargs = "-Xms2G -Xmx2G",
     mainClass = "de.creditreform.architecture.management.shoo.ui.ShooCli",
-    projectName = "shoo-cli",
+    projectName = "shoo",
     console = "integratedTerminal",
   },
   {
@@ -57,7 +57,7 @@ dap.configurations.java = {
     args = '-r /home/maassens/workspace/architecture-management/test-init commit "commit to debug"',
     vmargs = "-Xms2G -Xmx2G",
     mainClass = "de.creditreform.architecture.management.shoo.ui.ShooCli",
-    projectName = "shoo-cli",
+    projectName = "shoo",
     console = "integratedTerminal",
   },
   {
@@ -67,7 +67,7 @@ dap.configurations.java = {
     args = "-t -r /home/maassens/workspace/architecture-management/test-init push",
     vmargs = "-Xms2G -Xmx2G",
     mainClass = "de.creditreform.architecture.management.shoo.ui.ShooCli",
-    projectName = "shoo-cli",
+    projectName = "shoo",
     console = "integratedTerminal",
   },
   {
@@ -77,7 +77,15 @@ dap.configurations.java = {
     args = "-r /home/maassens/workspace/architecture-management/test-init -t sync",
     vmargs = "-Xms2G -Xmx2G",
     mainClass = "de.creditreform.architecture.management.shoo.ui.ShooCli",
-    projectName = "shoo-cli",
+    projectName = "shoo",
+    console = "integratedTerminal",
+  },
+  {
+    type = "java",
+    request = "attach",
+    hostName = "127.0.0.1",
+    port = 8000,
+    name = "Debug remote on port 8000",
     console = "integratedTerminal",
   },
   -- {
@@ -102,4 +110,25 @@ dap.configurations.java = {
   --   end,
   -- },
 }
-return {}
+
+return {
+  {
+    "jay-babu/mason-nvim-dap.nvim",
+    keys = {
+      {
+        "<leader>dO",
+        function()
+          require("dap").step_out()
+        end,
+        desc = "Step Out",
+      },
+      {
+        "<leader>do",
+        function()
+          require("dap").step_over()
+        end,
+        desc = "Step Over",
+      },
+    },
+  },
+}
