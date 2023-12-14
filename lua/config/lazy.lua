@@ -11,6 +11,15 @@ else
   vim.opt.rtp:append("/home/linuxbrew/.linuxbrew/opt/fzf")
 end
 
+vim.api.nvim_create_user_command("LazyPodman", function()
+  if vim.fn.has("nvim-0.5") == 0 then
+    print("LazyPodman needs Neovim >= 0.5")
+    return
+  end
+
+  require("util.lazypodman").toggle()
+end, {})
+
 require("lazy").setup({
   spec = {
     -- add LazyVim and import its plugins
