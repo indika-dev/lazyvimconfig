@@ -49,12 +49,12 @@ end
 
 if vim.g.nvui then
   -- Configure nvui here
-  vim.cmd([[NvuiCmdFontFamily FiraCode Nerd Font]])
+  vim.cmd([[NvuiCmdFontFamily NotoMono Nerd Font Mono]])
   vim.cmd([[set linespace=1]])
   if "stefan" == vim.env.USER then
-    vim.cmd([[set guifont=FiraCode\ Nerd\ Font:h16]])
+    vim.cmd([[set guifont=NotoMono\ Nerd\ Font\ Mono:h16]])
   else
-    vim.cmd([[set guifont=FiraCode\ Nerd\ Font:h14]])
+    vim.cmd([[set guifont=NotoMono\ Nerd\ Font\ Mono:h14]])
   end
   vim.cmd([[NvuiPopupMenuDefaultIconFg white]])
   vim.cmd([[NvuiCmdBg #1e2125]])
@@ -83,9 +83,9 @@ end
 
 if vim.g.fvim_loaded then
   if "stefan" == vim.env.USER then
-    vim.cmd([[set guifont=FiraCode\ Nerd\ Font:h18]])
+    vim.cmd([[set guifont=NotoMono\ Nerd\ Font\ Mono:h18]])
   else
-    vim.cmd([[set guifont=FiraCode\ Nerd\ Font:h14]])
+    vim.cmd([[set guifont=NotoMono\ Nerd\ Font\ Mono:h14]])
   end
 
   -- Toggle between normal and fullscreen
