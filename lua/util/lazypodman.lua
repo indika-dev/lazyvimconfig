@@ -53,11 +53,11 @@ utils
 local utils = {}
 
 utils.is_lazydocker_available = function()
-  return vim.fn.executable("lazydocker") == 1
+  return vim.fn.executable(vim.fn.expand("$USER") .. "/Applications/lazydocker") == 1
 end
 
 utils.is_docker_available = function()
-  return vim.fn.executable("docker") == 1
+  return vim.fn.executable("podman") == 1
 end
 
 --[[
@@ -119,7 +119,7 @@ function View:close(opts)
 end
 
 function View:render()
-  vim.fn.termopen("DOCKER_HOST=unix:///run/user/$UID/podman/podman.sock lazydocker", {
+  vim.fn.termopen("DOCKER_HOST=unix:///run/user/$UID/podman/podman.sock /home/stefan/Applications/lazydocker", {
     on_exit = function()
       self:close()
     end,
