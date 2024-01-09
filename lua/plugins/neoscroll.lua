@@ -18,7 +18,7 @@ return {
       require("neoscroll").setup(opts)
     end,
     cond = function()
-      return not vim.g.neovide and not vim.g.nvui
+      return not vim.g.neovide and not vim.g.nvui and vim.fn.has("nvim-0.10") ~= 1
     end,
   },
 }
