@@ -24,5 +24,5 @@ local opts = {
     },
   },
 }
-
-require("lvim.lsp.manager").setup("yamlls", opts)
+require("lspconfig")["yamlls"].setup(opts)
+-- require("lsp.manager").setup("yamlls", opts)
