@@ -8,7 +8,7 @@
   "neoconf": {
     "plugins": {
       "lua_ls": { "enabled": true },
-      "jdtls": { "enabled": true },
+      "jdtls": { "enabled": false },
       "rust_analyzer": { "enabled": true },
       "jsonls": { "enabled": true },
       "yamlls": { "enabled": true },

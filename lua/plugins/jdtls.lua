@@ -15,11 +15,30 @@ return {
           ),
           vim.fn.glob(
             require("mason-registry").get_package("java-test"):get_install_path()
-              .. "/extension/server/com.microsoft.java.test.runner-jar-with-dependencies.jar"
+              .. "/extension/server/com.microsoft.java.test.plugin-*.jar"
           ),
           vim.fn.glob(
             require("mason-registry").get_package("java-test"):get_install_path()
-              .. "/extension/server/com.microsoft.java.test.plugin-*.jar"
+              .. "/extension/server/com.microsoft.java.test.runner-jar-with-dependencies.jar"
+          ),
+          vim.fn.glob(
+            require("mason-registry").get_package("java-test"):get_install_path() .. "/extension/server/junit-*.jar"
+          ),
+          vim.fn.glob(
+            require("mason-registry").get_package("java-test"):get_install_path()
+              .. "/extension/server/org.apiguardian.api_*.jar"
+          ),
+          vim.fn.glob(
+            require("mason-registry").get_package("java-test"):get_install_path()
+              .. "/extension/server/org.eclipse.jdt.junit4.runtime_*.jar"
+          ),
+          vim.fn.glob(
+            require("mason-registry").get_package("java-test"):get_install_path()
+              .. "/extension/server/org.eclipse.jdt.junit5.runtime_*.jar"
+          ),
+          vim.fn.glob(
+            require("mason-registry").get_package("java-test"):get_install_path()
+              .. "/extension/server/org.opentest4j_*.jar"
           ),
         }
         local bundles = {}
@@ -309,7 +328,7 @@ return {
               "-Dosgi.configuration.cascaded=true",
               "-Djava.import.generatesMetadataFilesAtProjectRoot=false",
               "-DDetectVMInstallationsJob.disabled=true",
-              '-D"aether.dependencyCollector.impl=bf"',
+              "-Daether.dependencyCollector.impl=bf",
               "-Dsun.zip.disableMemoryMapping=true",
               "-XX:+UseParallelGC",
               "-XX:GCTimeRatio=4",
