@@ -172,7 +172,7 @@ return {
               "settings.gradle.kts", -- Gradle
             },
             -- Multi-module projects
-            { "build.gradle", "build.gradle.kts", ".git" },
+            { "build.gradle", "build.gradle.kts", ".mvn", ".git" },
           }) do
             local root = jdtls_utils.root_pattern(unpack(patterns))(fname)
             if root then
