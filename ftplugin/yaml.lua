@@ -25,4 +25,3 @@ local opts = {
   },
 }
 require("lspconfig")["yamlls"].setup(opts)
--- require("lsp.manager").setup("yamlls", opts)
