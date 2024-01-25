@@ -8,3 +8,10 @@ vim.api.nvim_set_keymap(
   { desc = "show Typeinfo", noremap = true, silent = true }
 )
 vim.api.nvim_set_keymap("n", "gp", "<cmd>LazyPodman<CR>", { desc = "LazyPodman", noremap = true, silent = true })
+
+vim.api.nvim_set_keymap(
+  "n",
+  "<leader>xr",
+  ":lua vim.diagnostic.reset()<CR>",
+  { desc = "reset Diagnostics cache", noremap = true, silent = true }
+)
