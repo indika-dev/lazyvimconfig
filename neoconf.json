@@ -52,6 +52,18 @@
       "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/master/ingress.json": "*ngres*.{yml,yaml}",
       "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/master/secret.json": "*ecre*.{yml,yaml}"
     },
+    "jsonls": {
+      "json.schemaDownload.enable": true,
+      "json.format.enable": true,
+      "json.validate.enable": true,
+      "json.schemas": [
+        {
+          "description": "nbfc-linux configuration file",
+          "fileMatch": ["config.json"],
+          "url": "file:///home/stefan/.config/nvim/schema/FanControlConfigV3-v1.0.0-schema.json"
+        }
+      ]
+    },
     "rust_analyzer": {
       "rust-analyzer.checkOnSave.enable": true,
       "rust-analyzer.checkOnSave.command": "clippy",
