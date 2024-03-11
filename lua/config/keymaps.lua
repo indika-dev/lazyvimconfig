@@ -15,3 +15,10 @@ vim.api.nvim_set_keymap(
   ":lua vim.diagnostic.reset()<CR>",
   { desc = "reset Diagnostics cache", noremap = true, silent = true }
 )
+
+-- vim.api.nvim_set_keymap.set("n", "gC", function()
+--   require("telescope").extensions.diff.diff_files({ hidden = true })
+-- end, { desc = "Compare 2 files" })
+vim.keymap.set("n", "gC", function()
+  require("telescope").extensions.diff.diff_current({ hidden = true })
+end, { desc = "Compare file with current" })

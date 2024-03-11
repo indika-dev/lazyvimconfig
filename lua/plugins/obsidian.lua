@@ -1,9 +1,12 @@
 return {
   {
     "epwalsh/obsidian.nvim",
+    version = "*",
+    lazy = true,
+    ft = "markdown",
     dependencies = {
-      -- "preservim/vim-markdown",
-      -- "godlygeek/tabular",
+      -- Required.
+      "nvim-lua/plenary.nvim",
     },
     keys = {
       {

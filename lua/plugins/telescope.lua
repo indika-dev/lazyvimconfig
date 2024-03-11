@@ -1,6 +1,12 @@
 return {
   {
     "telescope.nvim",
+    dependencies = {
+      "jemag/telescope-diff.nvim",
+      config = function()
+        require("telescope").load_extension("diff")
+      end,
+    },
     opts = {
       defaults = {
         file_ignore_patterns = {
