@@ -25,4 +25,18 @@ vim.api.nvim_create_autocmd({ "BufWritePost" }, {
     local _, _ = pcall(vim.lsp.codelens.refresh)
   end,
 })
+vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+  pattern = { "*.mustache", "*.hogan", "*.hulk", "*.hjs" },
+  callback = function(args)
+    local buf = vim.api.nvim_get_current_buf()
+    vim.api.nvim_buf_set_option(buf, "filetype", "mustache")
+  end,
+})
+vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+  pattern = { "*.handlebars", "*.hdbs", "*.hbs", "*.hb" },
+  callback = function(args)
+    local buf = vim.api.nvim_get_current_buf()
+    vim.api.nvim_buf_set_option(buf, "filetype", "html.handlebars")
+  end,
+})
 -- end
