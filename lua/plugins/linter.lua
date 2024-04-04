@@ -44,19 +44,19 @@ return {
         --     return vim.fs.find({ "selene.toml" }, { path = ctx.filename, upward = true })[1]
         --   end,
         --
-        djlint = {
-          cmd = "/home/maassens/.local/share/nvim/mason/bin/djlint",
-          args = {
-            "-",
-            "--profile",
-            "handlebars",
-            "--lint",
-            "-e",
-            "mustache",
-            "--quiet",
-          },
-          -- parser = require("lint.parser").from_errorformat(errorformat),
-        },
+        -- djlint = {
+        --   cmd = "/home/maassens/.local/share/nvim/mason/bin/djlint",
+        --   args = {
+        --     "-",
+        --     "--profile",
+        --     "handlebars",
+        --     "--lint",
+        --     "-e",
+        --     "mustache",
+        --     "--quiet",
+        --   },
+        --   -- parser = require("lint.parser").from_errorformat(errorformat),
+        -- },
       },
     },
   },
