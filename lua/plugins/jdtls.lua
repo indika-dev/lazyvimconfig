@@ -85,7 +85,10 @@ return {
             },
           }
         end
-        if settings.java.format.settings.profile == "GoogleStyle" then
+        if settings.java.format.settings.profile == nil or settings.java.format.settings.profile == "" then
+          settings.java.format.settings.profile = "GoogleStyle"
+          settings.java.format.settings.url = vim.fn.stdpath("config") .. "/.java-google-formatter.xml"
+        elseif settings.java.format.settings.profile == "GoogleStyle" then
           settings.java.format.settings.url = vim.fn.stdpath("config") .. "/.java-google-formatter.xml"
         else
           settings.java.format.settings.url = vim.fn.stdpath("config") .. "/.eclipse-formatter.xml"
@@ -96,7 +99,7 @@ return {
         local status_jdtls, jdtls = pcall(require, "jdtls")
         local std_extended_capbilities = {
           resolveAdditionalTextEditsSupport = true,
-          classFileContentsSupport = false,
+          -- classFileContentsSupport = false,
           -- progressReportProvider = false,
           -- classFileContentsSupport = false,
         }
@@ -318,7 +321,7 @@ return {
               "java.base/java.lang=ALL-UNNAMED",
               "--add-opens",
               "java.base/sun.nio.fs=ALL-UNNAMED",
-              "-noverify",
+              -- "-noverify",
               "-Declipse.application=org.eclipse.jdt.ls.core.id1",
               "-Dosgi.bundles.defaultStartLevel=4",
               "-Declipse.product=org.eclipse.jdt.ls.core.product",
@@ -326,14 +329,14 @@ return {
               "-Dosgi.sharedConfiguration.area=" .. jdtls_install_path .. "/config_" .. opts.config_os(),
               "-Dosgi.sharedConfiguration.area.readOnly=true",
               "-Dosgi.configuration.cascaded=true",
-              "-Djava.import.generatesMetadataFilesAtProjectRoot=false",
-              "-DDetectVMInstallationsJob.disabled=true",
-              "-Daether.dependencyCollector.impl=bf",
-              "-Dsun.zip.disableMemoryMapping=true",
-              "-XX:+UseParallelGC",
-              "-XX:GCTimeRatio=4",
-              "-XX:AdaptiveSizePolicyWeight=90",
-              "-XX:+UseStringDeduplication",
+              -- "-Djava.import.generatesMetadataFilesAtProjectRoot=false",
+              -- "-DDetectVMInstallationsJob.disabled=true",
+              -- "-Daether.dependencyCollector.impl=bf",
+              -- "-Dsun.zip.disableMemoryMapping=true",
+              -- "-XX:+UseParallelGC",
+              -- "-XX:GCTimeRatio=4",
+              -- "-XX:AdaptiveSizePolicyWeight=90",
+              -- "-XX:+UseStringDeduplication",
               "-Xmx1G",
               "-Xms100m",
               "-Xlog:disable",
