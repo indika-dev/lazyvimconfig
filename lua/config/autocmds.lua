@@ -3,6 +3,7 @@
 -- Add any additional autocmds here
 --if lvim.builtin.inlay_hints.active then
 vim.api.nvim_create_augroup("LspAttach_inlayhints", {})
+vim.api.nvim_create_augroup("wrap_spell", {})
 vim.api.nvim_create_autocmd("LspAttach", {
   pattern = { "*.java", "*.rs", "*.js", "*.ts" },
   group = "LspAttach_inlayhints",
@@ -25,6 +26,15 @@ vim.api.nvim_create_autocmd({ "BufWritePost" }, {
     local _, _ = pcall(vim.lsp.codelens.refresh)
   end,
 })
+-- wrap and check for spell in text filetypes
+vim.api.nvim_create_autocmd("FileType", {
+  group = "wrap_spell",
+  pattern = { "gitcommit", "markdown" },
+  callback = function()
+    vim.opt_local.wrap = true
+    vim.opt_local.spell = true
+  end,
+})
 vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
   pattern = { "*.mustache", "*.hogan", "*.hulk", "*.hjs" },
   callback = function(args)
@@ -36,7 +46,6 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
   pattern = { "*.handlebars", "*.hdbs", "*.hbs", "*.hb" },
   callback = function(args)
     local buf = vim.api.nvim_get_current_buf()
-    vim.api.nvim_buf_set_option(buf, "filetype", "html.handlebars")
+    vim.api.nvim_buf_set_option(buf, "filetype", "handlebars")
   end,
 })
--- end
