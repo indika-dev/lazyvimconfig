@@ -3,6 +3,11 @@
   "$description": "Schema for nbfc-linux for controlling fans of notebooks",
   "type": "object",
   "properties": {
+    "SelectedConfigId": {
+      "type": "string",
+      "description": "The selected config model. This equals the basename of a notebook model configuration file.",
+      "default": ""
+    },
     "LegacyTemperatureThresholdsBehaviour": {
       "type": "boolean",
       "description": "Backwards compatibilty with configuration files from the original NBFC project. The default is false. Do not use this option for new configuration files.",
