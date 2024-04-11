@@ -47,40 +47,6 @@ if vim.g.neovide then
   vim.api.nvim_set_keymap("n", "<C-ScrollWheelDown>", "<cmd>:set guifont=-<CR>", { noremap = true, silent = true })
 end
 
-if vim.g.nvui then
-  -- Configure nvui here
-  vim.cmd([[NvuiCmdFontFamily NotoMono Nerd Font Mono]])
-  vim.cmd([[set linespace=1]])
-  if "stefan" == vim.env.USER then
-    vim.cmd([[set guifont=NotoMono\ Nerd\ Font\ Mono:h16]])
-  else
-    vim.cmd([[set guifont=NotoMono\ Nerd\ Font\ Mono:h14]])
-  end
-  vim.cmd([[NvuiPopupMenuDefaultIconFg white]])
-  vim.cmd([[NvuiCmdBg #1e2125]])
-  vim.cmd([[NvuiCmdFg #abb2bf]])
-  vim.cmd([[NvuiCmdBigFontScaleFactor 1.0]])
-  vim.cmd([[NvuiCmdPadding 10]])
-  vim.cmd([[NvuiCmdCenterXPos 0.5]])
-  vim.cmd([[NvuiCmdTopPos 0.0]])
-  vim.cmd([[NvuiCmdFontSize 20.0]])
-  vim.cmd([[NvuiCmdBorderWidth 5]])
-  vim.cmd([[NvuiPopupMenuIconFg variable #56b6c2]])
-  vim.cmd([[NvuiPopupMenuIconFg function #c678dd]])
-  vim.cmd([[NvuiPopupMenuIconFg method #c678dd]])
-  vim.cmd([[NvuiPopupMenuIconFg field #d19a66]])
-  vim.cmd([[NvuiPopupMenuIconFg property #d19a66]])
-  vim.cmd([[NvuiPopupMenuIconFg module white]])
-  vim.cmd([[NvuiPopupMenuIconFg struct #e5c07b]])
-  vim.cmd([[NvuiCaretExtendTop 15]])
-  vim.cmd([[NvuiCaretExtendBottom 8]])
-  vim.cmd([[NvuiTitlebarFontSize 12]])
-  vim.cmd([[NvuiTitlebarFontFamily Arial]])
-  vim.cmd([[NvuiCursorAnimationDuration 0.1]])
-  -- vim.cmd [[NvuiToggleFrameless]]
-  vim.cmd([[NvuiOpacity 0.99]])
-end
-
 if vim.g.fvim_loaded then
   if "stefan" == vim.env.USER then
     vim.cmd([[set guifont=NotoMono\ Nerd\ Font\ Mono:h18]])
