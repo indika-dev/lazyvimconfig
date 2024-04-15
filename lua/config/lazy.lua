@@ -4,17 +4,13 @@ if not vim.loop.fs_stat(lazypath) then
   -- stylua: ignore
   vim.fn.system({ "git", "clone", "--filter=blob:none", "https://github.com/folke/lazy.nvim.git", "--branch=stable", lazypath })
 end
--- vim.opt.rtp:prepend(vim.env.LAZY or lazypath)
--- if "stefan" == vim.env.USER then
---   vim.opt.rtp:append("/usr/bin/fzf")
--- else
---   vim.opt.rtp:append("/home/linuxbrew/.linuxbrew/opt/fzf")
--- end
 vim.opt.rtp:prepend(vim.env.LAZY or lazypath)
 if "stefan" == vim.env.USER then
-  -- vim.opt.rtp:append("/usr/bin/rg")
+  vim.opt.rtp:append("/usr/bin/rg")
+  vim.opt.rtp:append("/usr/bin/fzf")
 else
-  vim.opt.rtp:append("/home/linuxbrew/.linuxbrew/bin")
+  vim.opt.rtp:append("/home/linuxbrew/.linuxbrew/bin/fzf")
+  vim.opt.rtp:append("/home/linuxbrew/.linuxbrew/bin/rg")
 end
 
 vim.api.nvim_create_user_command("LazyPodman", function()
