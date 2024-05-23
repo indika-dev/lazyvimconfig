@@ -21,24 +21,6 @@ if vim.g.neovide then
   vim.g.neovide_fullscreen = false
   vim.g.neovide_profiler = false
   -- vim.g.neovide_cursor_vfx_mode = ''
-  -- command -nargs=0 NeovideToggleFullscreen :let g:neovide_fullscreen = !g:neovide_fullscreen
-  -- nnoremap <a-cr> :NeovideToggleFullscreen<cr>
-  -- vim.o.guifont = "JetBrainsMono Nerd Font:h12"
-  -- vim.o.guifont = "CaskaydiaCove Nerd Font:h14"
-  if "stefan" == vim.env.USER then
-    -- vim.o.guifont = "FiraCode Nerd Font Mono:h16"
-    vim.o.guifont = "NotoMono Nerd Font Mono:h16"
-  else
-    -- vim.o.guifont = "FiraCode Nerd Font Mono:h14"
-    vim.o.guifont = "NotoMono Nerd Font Mono:h14"
-  end
-  -- vim.o.guifont ="GoMono NF:h16"
-  -- vim.o.guifont ="FuraCode NF:h16"
-  -- vim.o.guifont ="Hack Nerd Font:h16"
-  -- vim.o.guifont ="NotoSansMono Nerd Font:h16"
-  -- vim.o.guifont ="SaucecodePro Nerd Font:h16"
-  -- vim.o.guifont ="UbuntuMonoDerivativePowerline Nerd Font:h16"
-  -- vim.cmd [[set guifont=FiraCode\ Nerd\ Font:h12]]
   -- vim.api.nvim_set_keymap("n", "p", "<cmd>:put +<cr>Jk", { noremap = true, silent = true })
   -- vim.api.nvim_set_keymap("n", "p", "<cmd>:set paste | put + | set nopaste<cr>Jk", { noremap = true, silent = true })
   -- vim.api.nvim_set_keymap("n", "<s-p>", "<cmd>:put! +<cr>Jk", { noremap = true, silent = true })
