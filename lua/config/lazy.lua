@@ -6,11 +6,9 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(vim.env.LAZY or lazypath)
 if "stefan" == vim.env.USER then
-  vim.opt.rtp:append("/usr/bin/rg")
-  vim.opt.rtp:append("/usr/bin/fzf")
+  vim.opt.rtp:append("/usr/bin/")
 else
-  vim.opt.rtp:append("/home/linuxbrew/.linuxbrew/bin/fzf")
-  vim.opt.rtp:append("/home/linuxbrew/.linuxbrew/bin/rg")
+  vim.opt.rtp:append("/home/linuxbrew/.linuxbrew/bin/")
 end
 
 vim.api.nvim_create_user_command("LazyPodman", function()
