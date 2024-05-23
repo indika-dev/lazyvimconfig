@@ -341,7 +341,7 @@ return {
         lualine_c = { "filename" },
         lualine_x = { "location" },
         lualine_y = {},
-        lualine_z = { get_attached_clients },
+        lualine_z = {},
       },
     },
   },
