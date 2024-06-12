@@ -18,10 +18,6 @@ return {
               .. "/extension/server/com.microsoft.java.test.plugin-*.jar"
           ),
           vim.fn.glob(
-            require("mason-registry").get_package("java-test"):get_install_path()
-              .. "/extension/server/com.microsoft.java.test.runner-jar-with-dependencies.jar"
-          ),
-          vim.fn.glob(
             require("mason-registry").get_package("java-test"):get_install_path() .. "/extension/server/junit-*.jar"
           ),
           vim.fn.glob(

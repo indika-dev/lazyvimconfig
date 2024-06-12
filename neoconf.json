@@ -84,6 +84,10 @@
       "rust-analyzer.updates.channel": "system"
     },
     "tsserver": {
+      "typescript.implementationsCodeLens.enabled": true,
+      "typescript.implementationsCodeLens.showOnInterfaceMethods": true,
+      "typescript.referencesCodeLens.enabled": true,
+      "typescript.referencesCodeLens.showOnAllFunctions": false,
       "typescript.inlayHints.includeInlayParameterNameHints": "all",
       "typescript.inlayHints.includeInlayParameterNameHintsWhenArgumentMatchesName": false,
       "typescript.inlayHints.includeInlayFunctionParameterTypeHints": true,
