@@ -24,16 +24,28 @@ vim.api.nvim_create_autocmd("FileType", {
 -- filetype recognition for mustache and handlebars filetypes
 vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
   pattern = { "*.mustache", "*.hogan", "*.hulk", "*.hjs" },
-  callback = function(args)
+  callback = function(_)
     local buf = vim.api.nvim_get_current_buf()
     vim.api.nvim_buf_set_option(buf, "filetype", "mustache")
   end,
 })
 vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
   pattern = { "*.handlebars", "*.hdbs", "*.hbs", "*.hb" },
-  callback = function(args)
+  callback = function(_)
     local buf = vim.api.nvim_get_current_buf()
     vim.api.nvim_buf_set_option(buf, "filetype", "handlebars")
+  end,
+})
+
+vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+  callback = function()
+    -- try_lint without arguments runs the linters defined in `linters_by_ft`
+    -- for the current filetype
+    require("lint").try_lint()
+
+    -- You can call `try_lint` with a linter name or a list of names to always
+    -- run specific linters, independent of the `linters_by_ft` configuration
+    -- require("lint").try_lint("cspell")
   end,
 })
 
