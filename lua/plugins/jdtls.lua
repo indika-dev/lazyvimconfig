@@ -60,6 +60,11 @@ return {
                   {
                     name = "JavaSE-17",
                     path = vim.env.HOME .. "/.local/lib/jvm-17/",
+                    default = false,
+                  },
+                  {
+                    name = "JavaSE-21",
+                    path = vim.env.HOME .. "/.local/lib/jvm-21/",
                     default = true,
                   },
                 },
@@ -76,18 +81,18 @@ return {
           settings.java.configuration.runtimes = {
             {
               name = "JavaSE-17",
-              path = vim.env.HOME .. "/.local/lib/jvm-17/",
+              path = vim.env.HOME .. "/.local/lib/jvm-21/",
               default = true,
             },
           }
         end
         if settings.java.format.settings.profile == nil or settings.java.format.settings.profile == "" then
           settings.java.format.settings.profile = "GoogleStyle"
-          settings.java.format.settings.url = vim.fn.stdpath("config") .. "/.java-google-formatter.xml"
+          settings.java.format.settings.url = vim.env.HOME .. "/.local/lib/java-google-formatter.xml"
         elseif settings.java.format.settings.profile == "GoogleStyle" then
-          settings.java.format.settings.url = vim.fn.stdpath("config") .. "/.java-google-formatter.xml"
+          settings.java.format.settings.url = vim.env.HOME .. "/.local/lib/java-google-formatter.xml"
         else
-          settings.java.format.settings.url = vim.fn.stdpath("config") .. "/.eclipse-formatter.xml"
+          settings.java.format.settings.url = vim.env.HOME .. "/.local/lib/eclipse-formatter.xml"
         end
         return settings
       end
@@ -262,7 +267,7 @@ return {
           return vim.fn.glob(jdtls_install_path .. "/plugins/org.eclipse.equinox.launcher_*.jar")
         end,
         java_home = function()
-          return vim.env.HOME .. "/.local/lib/jvm-17"
+          return vim.env.HOME .. "/.local/lib/jvm-21"
         end,
         jdtls_jvm_home = function()
           return vim.env.HOME .. "/.local/lib/semeru-17"
