@@ -60,6 +60,11 @@ return {
                   {
                     name = "JavaSE-17",
                     path = vim.env.HOME .. "/.local/lib/jvm-17/",
+                    default = false,
+                  },
+                  {
+                    name = "JavaSE-21",
+                    path = vim.env.HOME .. "/.local/lib/jvm-21/",
                     default = true,
                   },
                   {
@@ -81,7 +86,7 @@ return {
           settings.java.configuration.runtimes = {
             {
               name = "JavaSE-17",
-              path = vim.env.HOME .. "/.local/lib/jvm-17/",
+              path = vim.env.HOME .. "/.local/lib/jvm-21/",
               default = true,
             },
             {
@@ -272,7 +277,7 @@ return {
           return vim.fn.glob(jdtls_install_path .. "/plugins/org.eclipse.equinox.launcher_*.jar")
         end,
         java_home = function()
-          return vim.env.HOME .. "/.local/lib/jvm-17"
+          return vim.env.HOME .. "/.local/lib/jvm-21"
         end,
         jdtls_jvm_home = function()
           return vim.env.HOME .. "/.local/lib/semeru-17"
