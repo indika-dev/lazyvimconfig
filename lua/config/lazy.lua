@@ -10,6 +10,20 @@ if "stefan" == vim.env.USER then
 else
   vim.opt.rtp:append("/home/linuxbrew/.linuxbrew/bin/")
 end
+vim.filetype.add({
+  extension = {
+    mustache = "mustache",
+    hogan = "mustache",
+    hulk = "mustache",
+    hjs = "mustache",
+    handlebars = "handlebars",
+    hdbs = "handlebars",
+    hbs = "handlebars",
+    hb = "handlebars",
+  },
+})
+vim.treesitter.language.register("glimmer", "mustache") -- the someft filetype will use the python parser and queries.
+vim.treesitter.language.register("glimmer", "handlebars") -- the someft filetype will use the python parser and queries.
 
 vim.api.nvim_create_user_command("LazyPodman", function()
   if vim.fn.has("nvim-0.5") == 0 then

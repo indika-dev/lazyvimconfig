@@ -62,6 +62,11 @@ return {
                     path = vim.env.HOME .. "/.local/lib/jvm-17/",
                     default = true,
                   },
+                  {
+                    name = "JavaSE-21",
+                    path = "/home/maassens/.local/lib/jvm-21/",
+                    default = false,
+                  },
                 },
               },
               format = {
@@ -79,15 +84,20 @@ return {
               path = vim.env.HOME .. "/.local/lib/jvm-17/",
               default = true,
             },
+            {
+              name = "JavaSE-21",
+              path = "/home/maassens/.local/lib/jvm-21/",
+              default = false,
+            },
           }
         end
         if settings.java.format.settings.profile == nil or settings.java.format.settings.profile == "" then
           settings.java.format.settings.profile = "GoogleStyle"
-          settings.java.format.settings.url = vim.fn.stdpath("config") .. "/.java-google-formatter.xml"
+          settings.java.format.settings.url = vim.env.HOME .. "/.local/lib/java-google-formatter.xml"
         elseif settings.java.format.settings.profile == "GoogleStyle" then
-          settings.java.format.settings.url = vim.fn.stdpath("config") .. "/.java-google-formatter.xml"
+          settings.java.format.settings.url = vim.env.HOME .. "/.local/lib/java-google-formatter.xml"
         else
-          settings.java.format.settings.url = vim.fn.stdpath("config") .. "/.eclipse-formatter.xml"
+          settings.java.format.settings.url = vim.env.HOME .. "/.local/lib/eclipse-formatter.xml"
         end
         return settings
       end
