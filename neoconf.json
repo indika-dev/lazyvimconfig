@@ -7,15 +7,33 @@
   },
   "neoconf": {
     "plugins": {
-      "lua_ls": { "enabled": true },
-      "jdtls": { "enabled": false },
-      "rust_analyzer": { "enabled": true },
-      "jsonls": { "enabled": true },
-      "bashls": { "enabled": true },
-      "eslint": { "enabled": true },
-      "html": { "enabled": true },
-      "tsserver": { "enabled": true },
-      "yamlls": { "enabled": true }
+      "lua_ls": {
+        "enabled": true
+      },
+      "jdtls": {
+        "enabled": false
+      },
+      "rust_analyzer": {
+        "enabled": true
+      },
+      "jsonls": {
+        "enabled": true
+      },
+      "bashls": {
+        "enabled": true
+      },
+      "eslint": {
+        "enabled": true
+      },
+      "html": {
+        "enabled": true
+      },
+      "tsserver": {
+        "enabled": true
+      },
+      "yamlls": {
+        "enabled": true
+      }
     }
   },
   "lspconfig": {
@@ -53,14 +71,15 @@
       "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/master/secret.json": "*ecre*.{yml,yaml}"
     },
     "jsonls": {
+      "json.referencesCodeLens.enabled": false,
       "json.schemaDownload.enable": true,
-      "json.format.enable": true,
+      "json.format.enable": false,
       "json.validate.enable": true,
       "json.schemas": [
         {
           "description": "nbfc-linux configuration file",
           "fileMatch": ["config.json"],
-          "url": "file:///home/stefan/.config/nvim/schema/FanControlConfigV3-v1.0.0-schema.json"
+          "url": "file:///home/maassens/.config/nvim/schema/FanControlConfigV3-v1.0.0-schema.json"
         }
       ]
     },
