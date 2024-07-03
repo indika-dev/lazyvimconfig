@@ -76,8 +76,9 @@
       "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/master/secret.json": "*ecre*.{yml,yaml}"
     },
     "jsonls": {
+      "json.referencesCodeLens.enabled": false,
       "json.schemaDownload.enable": true,
-      "json.format.enable": true,
+      "json.format.enable": false,
       "json.validate.enable": true,
       "json.schemas": [
         {
@@ -196,8 +197,8 @@
           "default": false
         },
         {
-          "name": "JavaSE-14",
-          "path": "/home/stefan/.local/lib/jvm-17",
+          "name": "JavaSE-21",
+          "path": "/home/stefan/.local/lib/jvm-21",
           "default": true
         }
       ],
