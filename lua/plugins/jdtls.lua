@@ -67,6 +67,11 @@ return {
                     path = vim.env.HOME .. "/.local/lib/jvm-21/",
                     default = true,
                   },
+                  {
+                    name = "JavaSE-21",
+                    path = "/home/maassens/.local/lib/jvm-21/",
+                    default = false,
+                  },
                 },
               },
               format = {
@@ -83,6 +88,11 @@ return {
               name = "JavaSE-17",
               path = vim.env.HOME .. "/.local/lib/jvm-21/",
               default = true,
+            },
+            {
+              name = "JavaSE-21",
+              path = "/home/maassens/.local/lib/jvm-21/",
+              default = false,
             },
           }
         end

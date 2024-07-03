@@ -6,7 +6,6 @@ return {
   -----------------------------------------------------------------------------
   -- Vimscript syntax/indent plugins
   { "chrisbra/csv.vim", ft = "csv" },
-  { "mustache/vim-mustache-handlebars", ft = { "mustache", "handlebars" } },
   { "lifepillar/pgsql.vim", ft = "pgsql" },
   { "MTDL9/vim-log-highlighting", ft = "log" },
 
@@ -29,6 +28,7 @@ return {
         "gitignore",
         "gitattributes",
         "graphql",
+        "glimmer",
         "hcl",
         "html",
         "http",
