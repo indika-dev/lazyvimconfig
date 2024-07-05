@@ -19,6 +19,7 @@ return {
         "comment",
         "css",
         "cue",
+        "dap_repl",
         "diff",
         "fish",
         "fennel",
