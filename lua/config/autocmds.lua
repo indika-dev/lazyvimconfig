@@ -2,14 +2,6 @@
 -- Default autocmds that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/autocmds.lua
 -- Add any additional autocmds here
 
--- refresh code lens automatically
-vim.api.nvim_create_autocmd({ "BufWritePost" }, {
-  pattern = { "*.java", "*.rs", "*.js", "*.ts" },
-  callback = function(args)
-    local _, _ = pcall(vim.lsp.codelens.refresh)
-  end,
-})
-
 -- wrap and check for spell in text filetypes
 vim.api.nvim_create_augroup("wrap_spell", {})
 vim.api.nvim_create_autocmd("FileType", {
