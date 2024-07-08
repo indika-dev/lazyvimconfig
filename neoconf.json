@@ -221,7 +221,7 @@
         "**/archetype-resources/**",
         "**/META-INF/maven/**"
       ],
-      "java.import.generatesMetadataFilesAtProjectRoot": false,
+      "java.import.generatesMetadataFilesAtProjectRoot": true,
       "java.import.gradle.arguments": null,
       "java.import.gradle.enabled": true,
       "java.import.gradle.home": null,
