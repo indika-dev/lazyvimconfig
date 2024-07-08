@@ -2,10 +2,7 @@
   "neodev": {
     "library": {
       "enabled": true,
-      "plugins": [
-        "nvim-lspconfig",
-        "lsp"
-      ]
+      "plugins": ["nvim-lspconfig", "lsp"]
     }
   },
   "neoconf": {
@@ -53,9 +50,7 @@
         "missing-parameter"
       ],
       "Lua.diagnostics.libraryFiles": "Disable",
-      "Lua.diagnostics.globals": [
-        "vim"
-      ]
+      "Lua.diagnostics.globals": ["vim"]
     },
     "yamlls": {
       "yaml.hover": true,
@@ -83,10 +78,8 @@
       "json.schemas": [
         {
           "description": "nbfc-linux configuration file",
-          "fileMatch": [
-            "config.json"
-          ],
-          "url": "file:///home/stefan/.config/nvim/schema/FanControlConfigV3-v1.0.0-schema.json"
+          "fileMatch": ["config.json"],
+          "url": "file:///home/maassens/.config/nvim/schema/FanControlConfigV3-v1.0.0-schema.json"
         }
       ]
     },
@@ -176,14 +169,7 @@
         "io.micrometer.shaded.*"
       ],
       "java.completion.guessMethodArguments": true,
-      "java.completion.importOrder": [
-        "#",
-        "java",
-        "javax",
-        "org",
-        "com",
-        ""
-      ],
+      "java.completion.importOrder": ["#", "java", "javax", "org", "com", ""],
       "java.completion.maxResults": 0,
       "java.completion.postfix.enabled": true,
       "java.configuration.checkProjectSettingsExclusions": false,
@@ -193,12 +179,12 @@
       "java.configuration.runtimes": [
         {
           "name": "JavaSE-17",
-          "path": "/home/stefan/.local/lib/jvm-17",
+          "path": "/home/maassens/.local/lib/jvm-17",
           "default": false
         },
         {
           "name": "JavaSE-21",
-          "path": "/home/stefan/.local/lib/jvm-21",
+          "path": "/home/maassens/.local/lib/jvm-21",
           "default": true
         }
       ],
@@ -212,7 +198,7 @@
       "java.format.enabled": true,
       "java.format.onType.enabled": true,
       "java.format.settings.profile": "GoogleStyle",
-      "java.format.settings.url": "/home/stefan/.config/lvim/.java-google-formatter.xml",
+      "java.format.settings.url": "/home/maassens/.local/lib/java-google-formatter.xml",
       "java.home": null,
       "java.implementationsCodeLens.enabled": true,
       "java.import.exclusions": [
@@ -249,13 +235,8 @@
       "java.project.importHint": true,
       "java.project.importOnFirstTimeStartup": "automatic",
       "java.project.outputPath": "",
-      "java.project.referencedLibraries": [
-        "lib/**/*.jar"
-      ],
-      "java.project.resourceFilters": [
-        "node_modules",
-        "\\.git"
-      ],
+      "java.project.referencedLibraries": ["lib/**/*.jar"],
+      "java.project.resourceFilters": ["node_modules", "\\.git"],
       "java.project.sourcePaths": [],
       "java.quickfix.showAt": "line",
       "java.recommendations.dependency.analytics.show": true,
