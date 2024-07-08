@@ -4,6 +4,26 @@ return {
   {
     "mfussenegger/nvim-jdtls",
     opts = function()
+      local initial_runtimes = function()
+        return {
+          {
+            name = "JavaSE-17",
+            path = vim.env.HOME .. "/.local/lib/jvm-17/",
+            default = vim.env.USER ~= "stefan",
+          },
+          {
+            name = "JavaSE-21",
+            path = vim.env.HOME .. "/.local/lib/jvm-21/",
+            default = vim.env.USER == "stefan",
+          },
+        }
+      end
+      local initial_format_settings = function()
+        return {
+          profile = "GoogleStyle",
+          url = vim.env.HOME .. "/.local/lib/java-google-formatter.xml",
+        }
+      end
       local bundles = function()
         local jar_patterns = {
           vim.fn.glob(
@@ -37,64 +57,40 @@ return {
               .. "/extension/server/org.opentest4j_*.jar"
           ),
         }
-        local bundles = {}
+        local result = {}
         for _, jar_pattern in ipairs(jar_patterns) do
           for _, bundle in ipairs(vim.split(jar_pattern, "\n", {})) do
             if bundle ~= {} then
-              table.insert(bundles, bundle)
+              table.insert(result, bundle)
             end
           end
         end
-        return bundles
+        return result
       end
       local jdtls_settings = function()
         local settings = {}
         local status_nlsp, nlsp = pcall(require, "nlspsettings")
         if status_nlsp then
           settings = nlsp.get_settings(vim.fn.stdpath("config"), "jdtls")
+          settings.java.configuration.runtimes = initial_runtimes()
+          settings.java.format.settings = initial_format_settings()
         else
           settings = {
             java = {
               configuration = {
-                runtimes = {
-                  {
-                    name = "JavaSE-17",
-                    path = vim.env.HOME .. "/.local/lib/jvm-17/",
-                    default = false,
-                  },
-                  {
-                    name = "JavaSE-21",
-                    path = vim.env.HOME .. "/.local/lib/jvm-21/",
-                    default = true,
-                  },
-                  {
-                    name = "JavaSE-21",
-                    path = "/home/maassens/.local/lib/jvm-21/",
-                    default = false,
-                  },
-                },
+                runtimes = initial_runtimes(),
               },
               format = {
-                settings = {
-                  profile = "GoogleStyle",
-                },
+                comments = { enabled = true },
+                enabled = true,
+                onType = { enabled = true },
+                settings = initial_format_settings(),
               },
             },
           }
         end
-        if settings.java.configuration.runtimes == nil then
-          settings.java.configuration.runtimes = {
-            {
-              name = "JavaSE-17",
-              path = vim.env.HOME .. "/.local/lib/jvm-21/",
-              default = true,
-            },
-            {
-              name = "JavaSE-21",
-              path = "/home/maassens/.local/lib/jvm-21/",
-              default = false,
-            },
-          }
+        if settings.java.configuration.runtimes == nil or settings.java.configuration.runtimes == {} then
+          settings.java.configuration.runtimes = initial_runtimes()
         end
         if settings.java.format.settings.profile == nil or settings.java.format.settings.profile == "" then
           settings.java.format.settings.profile = "GoogleStyle"
@@ -110,9 +106,6 @@ return {
         local status_jdtls, jdtls = pcall(require, "jdtls")
         local std_extended_capbilities = {
           resolveAdditionalTextEditsSupport = true,
-          -- classFileContentsSupport = false,
-          -- progressReportProvider = false,
-          -- classFileContentsSupport = false,
         }
         if not status_jdtls then
           return std_extended_capbilities
@@ -141,34 +134,6 @@ return {
           bundles = bundles(),
           extendedClientCapabilities = extendedClientCapabilities(),
         },
-        -- handlers = {
-        --   ["language/status"] = vim.schedule_wrap(function(error, result, ctx)
-        --     if "ServiceReady" == result.type then
-        --       -- command "LspSettings update jdtls"
-        --       require("jdtls.dap").setup_dap_main_class_configs({
-        --         verbose = true,
-        --         on_ready = function() end,
-        --       })
-        --     end
-        --   end),
-        -- ["language/status"] = function(_, result)
-        --   -- Print or whatever.
-        -- end,
-        -- ["$/progress"] = function(error, result, ctx)
-        -- disable progress updates.
-        -- if result.value then
-        --   if result.value.title then
-        --     if
-        --       (result.value.kind == "begin" and result.value.message:find("Building") ~= nil)
-        --       or result.value.kind == "report"
-        --       or result.value.kind == "end"
-        --     then
-        --       return vim.lsp.handlers["$/progress"](error, result, ctx)
-        --     end
-        --   end
-        -- end
-        --   end,
-        -- },
         on_attach = function()
           local _, _ = pcall(vim.lsp.codelens.refresh)
         end,
@@ -195,68 +160,6 @@ return {
           end
         end,
 
-        -- require("lspconfig.server_configurations.jdtls").default_config.root_dir,
-        -- root_dir = function(bufname)
-        --   local root_markers = { ".git", "mvnw", "gradlew", "pom.xml", "build.gradle", ".project" }
-        --   bufname = bufname or vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf())
-        --   local dirname = vim.fn.fnamemodify(bufname, ":p:h")
-        --   local getparent = function(p)
-        --     return vim.fn.fnamemodify(p, ":h")
-        --   end
-        --   while getparent(dirname) ~= dirname do
-        --     for _, marker in ipairs(root_markers) do
-        --       if vim.loop.fs_stat(jdtls_join(dirname, marker)) then
-        --         return dirname
-        --       end
-        --     end
-        --     dirname = getparent(dirname)
-        --   end
-        --   return dirname
-
-        -- root_markers = {
-        --   -- Single-module projects
-        --   {
-        --     "build.xml", -- Ant
-        --     "pom.xml", -- Maven
-        --     "settings.gradle", -- Gradle
-        --     "settings.gradle.kts", -- Gradle
-        --   },
-        --   -- Multi-module projects
-        --   { "build.gradle", "build.gradle.kts" },
-        -- }
-        -- local root_dir = require("jdtls.setup").find_root(root_markers, fname)
-        -- return root_dir or vim.fn.getcwd()
-        --   for _, patterns in ipairs(root_files) do
-        --     local root = require("lspconfig.util").root_pattern(unpack(patterns))(fname)
-        --     if root then
-        --       return root
-        --     end
-        --   end
-        -- end,
-
-        -- root_dir = function()
-        --   -- Find root of project
-        --   local root_markers = { ".git", "mvnw", "gradlew", "pom.xml", "build.gradle", ".project" }
-        --   local root_dir = require("jdtls.setup").find_root(root_markers)
-        --   if root_dir == "" then
-        --     return
-        --   end
-        -- end,
-        -- root_dir = function(fname)
-        -- for _, patterns in ipairs(root_files) do
-        --   local root = util.root_pattern(unpack(patterns))(fname)
-        --   if root then
-        --     return root
-        --   end
-        -- end
-        -- -- Find root of project
-        --   local root_markers = { ".git", "mvnw", "gradlew", "pom.xml", "build.gradle", ".project" }
-        --   local root_dir = require("jdtls.setup").find_root(root_markers, fname)
-        --   if root_dir == "" then
-        --     return
-        --   end
-        -- end,
-        --
         -- How to find the project name for a given root dir.
         project_name = function(root_dir)
           return root_dir and vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t") -- vim.fs.basename(root_dir)
@@ -277,10 +180,10 @@ return {
           return vim.fn.glob(jdtls_install_path .. "/plugins/org.eclipse.equinox.launcher_*.jar")
         end,
         java_home = function()
-          return vim.env.HOME .. "/.local/lib/jvm-21"
+          return vim.env.HOME .. "/.local/lib/jvm-17"
         end,
         jdtls_jvm_home = function()
-          return vim.env.HOME .. "/.local/lib/jvm-21"
+          return vim.env.HOME .. "/.local/lib/jvm-17"
         end,
         -- Where are the config and workspace dirs for a project?
         jdtls_config_dir = function(project_name)
@@ -294,28 +197,6 @@ return {
         end,
         jdtls = config,
         cmd = { "jdtls" },
-        -- full_cmd = function(opts)
-        --   local fname = vim.api.nvim_buf_get_name(0)
-        --   local root_dir = opts.root_dir(fname)
-        --   local project_name = opts.project_name(root_dir)
-        --   local cmd = vim.deepcopy(opts.cmd)
-        --   if project_name then
-        --     vim.list_extend(cmd, {
-        --       "-configuration",
-        --       opts.jdtls_config_dir(project_name),
-        --       "-data",
-        --       opts.jdtls_workspace_dir(project_name),
-        --       "--jvm-arg=-javaagent:" .. opts.jdtls_install_path() .. "/lombok.jar",
-        --     })
-        --   end
-        --   return cmd
-        -- end,
-        --
-        -- How to run jdtls. This can be overridden to a full java command-line
-        -- if the Python wrapper script doesn't suffice.
-        -- cmd = {
-        --   vim.env.HOME .. "/.local/lib/jvm-17" .. "/bin/java",
-        -- },
         full_cmd = function(opts)
           local fname = vim.api.nvim_buf_get_name(0)
           local root_dir = opts.root_dir(fname)
@@ -340,14 +221,10 @@ return {
               "-Dosgi.sharedConfiguration.area=" .. jdtls_install_path .. "/config_" .. opts.config_os(),
               "-Dosgi.sharedConfiguration.area.readOnly=true",
               "-Dosgi.configuration.cascaded=true",
-              -- "-Djava.import.generatesMetadataFilesAtProjectRoot=false",
-              -- "-DDetectVMInstallationsJob.disabled=true",
-              -- "-Daether.dependencyCollector.impl=bf",
-              -- "-Dsun.zip.disableMemoryMapping=true",
-              -- "-XX:+UseParallelGC",
-              -- "-XX:GCTimeRatio=4",
-              -- "-XX:AdaptiveSizePolicyWeight=90",
-              -- "-XX:+UseStringDeduplication",
+              "-Dsun.zip.disableMemoryMapping=true",
+              "-XX:+UseParallelGC",
+              "-XX:GCTimeRatio=4",
+              "-XX:AdaptiveSizePolicyWeight=90",
               "-Xmx1G",
               "-Xms100m",
               "-Xlog:disable",
