@@ -60,16 +60,11 @@ return {
                   {
                     name = "JavaSE-17",
                     path = vim.env.HOME .. "/.local/lib/jvm-17/",
-                    default = false,
-                  },
-                  {
-                    name = "JavaSE-21",
-                    path = vim.env.HOME .. "/.local/lib/jvm-21/",
                     default = true,
                   },
                   {
                     name = "JavaSE-21",
-                    path = "/home/maassens/.local/lib/jvm-21/",
+                    path = vim.env.HOME .. "/.local/lib/jvm-21/",
                     default = false,
                   },
                 },
@@ -86,7 +81,7 @@ return {
           settings.java.configuration.runtimes = {
             {
               name = "JavaSE-17",
-              path = vim.env.HOME .. "/.local/lib/jvm-21/",
+              path = vim.env.HOME .. "/.local/lib/jvm-17/",
               default = true,
             },
             {
@@ -277,10 +272,10 @@ return {
           return vim.fn.glob(jdtls_install_path .. "/plugins/org.eclipse.equinox.launcher_*.jar")
         end,
         java_home = function()
-          return vim.env.HOME .. "/.local/lib/jvm-21"
+          return vim.env.HOME .. "/.local/lib/jvm-17"
         end,
         jdtls_jvm_home = function()
-          return vim.env.HOME .. "/.local/lib/jvm-21"
+          return vim.env.HOME .. "/.local/lib/jvm-17"
         end,
         -- Where are the config and workspace dirs for a project?
         jdtls_config_dir = function(project_name)
