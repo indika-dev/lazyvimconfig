@@ -38,6 +38,10 @@ return {
               .. "/extension/server/com.microsoft.java.test.plugin-*.jar"
           ),
           vim.fn.glob(
+            require("mason-registry").get_package("java-test"):get_install_path()
+              .. "/extension/server/com.microsoft.java.test.plugin-*.jar"
+          ),
+          vim.fn.glob(
             require("mason-registry").get_package("java-test"):get_install_path() .. "/extension/server/junit-*.jar"
           ),
           vim.fn.glob(
@@ -56,6 +60,12 @@ return {
             require("mason-registry").get_package("java-test"):get_install_path()
               .. "/extension/server/org.opentest4j_*.jar"
           ),
+          vim.fn.glob(
+            require("mason-registry").get_package("java-test"):get_install_path() .. "/extension/server/jacoco*.jar"
+          ),
+          vim.fn.glob(
+            require("mason-registry").get_package("java-test"):get_install_path() .. "/extension/server/org.jacoco*.jar"
+          ),
         }
         local result = {}
         for _, jar_pattern in ipairs(jar_patterns) do
@@ -72,8 +82,6 @@ return {
         local status_nlsp, nlsp = pcall(require, "nlspsettings")
         if status_nlsp then
           settings = nlsp.get_settings(vim.fn.stdpath("config"), "jdtls")
-          settings.java.configuration.runtimes = initial_runtimes()
-          settings.java.format.settings = initial_format_settings()
         else
           settings = {
             java = {
@@ -92,13 +100,8 @@ return {
         if settings.java.configuration.runtimes == nil or settings.java.configuration.runtimes == {} then
           settings.java.configuration.runtimes = initial_runtimes()
         end
-        if settings.java.format.settings.profile == nil or settings.java.format.settings.profile == "" then
-          settings.java.format.settings.profile = "GoogleStyle"
-          settings.java.format.settings.url = vim.env.HOME .. "/.local/lib/java-google-formatter.xml"
-        elseif settings.java.format.settings.profile == "GoogleStyle" then
-          settings.java.format.settings.url = vim.env.HOME .. "/.local/lib/java-google-formatter.xml"
-        else
-          settings.java.format.settings.url = vim.env.HOME .. "/.local/lib/eclipse-formatter.xml"
+        if settings.java.format.settings == nil or settings.java.format.settings == {} then
+          settings.java.format.settings = initial_format_settings()
         end
         return settings
       end
@@ -242,7 +245,7 @@ return {
 
         -- These depend on nvim-dap, but can additionally be disabled by setting false here.
         dap = { hotcodereplace = "auto", config_overrides = {} },
-        test = true,
+        test = { config_overrides = {} },
       }
     end,
   },
