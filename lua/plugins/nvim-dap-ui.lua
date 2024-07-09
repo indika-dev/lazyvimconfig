@@ -1,14 +1,6 @@
 return {
   {
     "rcarriga/nvim-dap-ui",
-    ,
-    --   dependencies = {
-    --     "nvim-neotest/nvim-nio",
-    --     config = function()
-    --       require("telescope").load_extension("diff")
-    --     end,
-    --   },
-    -- -- stylua: ignore
     config = function(_, opts)
       -- setup dap config by VsCode launch.json file
       -- require("dap.ext.vscode").load_launchjs()
