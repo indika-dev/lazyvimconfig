@@ -2,6 +2,21 @@
 -- Default autocmds that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/autocmds.lua
 -- Add any additional autocmds here
 
+-- open a note from Obsidian app in Neovim
+local vault_location = "/**.md"
+if "stefan" == vim.env.USER then
+  vault_location = vim.env.HOME .. "/Dokumente/obsidian/my-vault" .. vault_location
+else
+  vault_location = vim.env.HOME .. "/Dokumente/obsidian-vault/Makroarchitektur" .. vault_location
+end
+local group = vim.api.nvim_create_augroup("obsidian_cmds", { clear = true })
+vim.api.nvim_create_autocmd("BufAdd", {
+  command = "ObsidianOpen",
+  pattern = { vault_location },
+  group = group,
+  desc = "Opens the current buffer in Obsidian",
+})
+
 -- wrap and check for spell in text filetypes
 vim.api.nvim_create_augroup("wrap_spell", {})
 vim.api.nvim_create_autocmd("FileType", {
