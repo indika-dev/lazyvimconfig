@@ -57,7 +57,7 @@ local function service_status()
         table.insert(status.formatting_providers, formatter)
       end
     end
-    if conform.will_fallback_lsp({ bufnr = buf }) then
+    if conform.list_formatters_to_run({ bufnr = buf }) then
       table.insert(status.formatting_providers, "lsp")
     end
   end
