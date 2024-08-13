@@ -44,14 +44,24 @@ return {
       -- Required.
       "nvim-lua/plenary.nvim",
     },
-    cmd = { "ObsidianOpen", "ObsidianNew", "ObsidianSearch", "ObsidianQuickSwitch", "ObsidianToday" },
+    cmd = {
+      "ObsidianOpen",
+      "ObsidianNew",
+      "ObsidianSearch",
+      "ObsidianQuickSwitch",
+      "ObsidianToday",
+      "ObsidianNewFromTemplate",
+      "ObsidianTOC",
+    },
     keys = {
       { "<leader>oO", "<cmd>ObsidianOpen<CR>", desc = "Open Obsidian" },
       { "<leader>on", "<cmd>ObsidianNew<CR>", desc = "New note" },
       { "<leader>os", "<cmd>ObsidianSearch<CR>", desc = "Search" },
       { "<leader>oo", "<cmd>ObsidianQuickSwitch<CR>", desc = "Find note" },
-      { "<leader>ot", "<cmd>ObsidianToday<CR>", desc = "Open Today" },
+      -- { "<leader>ot", "<cmd>ObsidianToday<CR>", desc = "Open Today" },
       { "<leader>oT", "<cmd>ObsidianTemplate<CR>", desc = "Insert from template" },
+      { "<leader>oN", "<cmd>ObsidianNewFromTemplate<CR>", desc = "Insert from template" },
+      { "<leader>ot", "<cmd>ObsidianTOC<CR>", desc = "Create table of content" },
     },
     opts = {
       workspaces = workspaces(),
