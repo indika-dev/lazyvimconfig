@@ -1,0 +1,15 @@
+{
+  "json.referencesCodeLens.enabled": false,
+  "json.schemaDownload.enable": true,
+  "json.format.enable": false,
+  "json.validate.enable": true,
+  "json.schemas": [
+    {
+      "description": "nbfc-linux configuration file",
+      "fileMatch": [
+        "config.json"
+      ],
+      "url": "file:///home/maassens/.config/nvim/schema/FanControlConfigV3-v1.0.0-schema.json"
+    }
+  ]
+}
