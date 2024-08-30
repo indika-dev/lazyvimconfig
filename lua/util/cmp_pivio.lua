@@ -2,7 +2,8 @@ local source = {}
 
 function source:is_available()
   -- Only returns `true` if the buffer is a markup file inside my blog directory.
-  return vim.bo.filetype == "toml"
+  -- as long as this is only an aexample, it should not appear anywhere
+  return vim.bo.filetype == "donotappear in any file"
 end
 
 function source:complete(params, callback)
