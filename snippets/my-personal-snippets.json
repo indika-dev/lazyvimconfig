@@ -1,0 +1,275 @@
+{
+  "shoo complete template": {
+    "prefix": "shoo_complete",
+    "isFileTemplate": true,
+    "body": [
+      "itsystem = 'TestSnippets'",
+      "",
+      "[pivio]",
+      "id = ''# ID aus Pivio, wird automatisch generiert",
+      "shortName = 'ts'",
+      "",
+      "[depends]",
+      "openapi =['*URL1', '*URL2*']",
+      "wsdl =['*URL1', '*URL2*']",
+      "",
+      "[[depends.gitlab]]",
+      "id = '*ProjektID aus Gitlab*'",
+      "files = ['*Projektpfad zu OpenAPI 1*', '*Projektpfad zu OpenAPI 2*']",
+      "",
+      "",
+      "[[depends.itsystems]]",
+      "designator = '*ID aus Pivio*'",
+      "prefixes = ['*Präfix 1*', '*Präfix 2*' ]",
+      "",
+      "[[depends.filetransfer]]",
+      "servicename = '*Pfad auf dem Server*'",
+      "description = '*Beschreibung*'",
+      "protocol = '*sftp|ftp|ftps*'",
+      "host = '*Name des FTP-Hosts*'",
+      "",
+      "[[depends.amqp]]",
+      "servicename = '*Queue- oder Topicname*'",
+      "description = '*Beschreibung*'",
+      "host = '*Name des Host*'",
+      "",
+      "[[depends.amqp]]",
+      "servicename = '*Queue- oder Topicname*'",
+      "description = '*Beschreibung*'",
+      "host = '*Name des Host*'",
+      "",
+      "[[depends.jms]]",
+      "servicename = '*Queue- oder Topicname*'",
+      "description = '*Beschreibung*'",
+      "host = '*Name des Host*'",
+      "",
+      "[[depends.ejb]]",
+      "servicename = '*Name der EJB*'",
+      "description = '*Beschreibung der EJB*'",
+      "protocol = '*t3s|t3*'",
+      "host = '*Name des Host*'",
+      "",
+      "[[depends.externalservices]]",
+      "service = '*URL*'",
+      "description = '*Beschreibung*'",
+      "via = 'proxy.creditreform.de'",
+      "",
+      "",
+      "[provides]",
+      "openapi =['*URL1', '*URL2*']",
+      "wsdl =['*URL1', '*URL2*']",
+      "",
+      "[[provides.gitlab]]",
+      "id = '*ProjektID aus Gitlab*'",
+      "files = ['*Projektpfad zu OpenAPI 1*', '*Projektpfad zu OpenAPI 2*']",
+      "",
+      "[[provides.excelFile]]",
+      "source = '*URL zur Exceldatei*'",
+      "type = 'KreditServices|unknown'",
+      "host = '*Name des Hosts*'",
+      "",
+      "[[provides.filetransfer]]",
+      "servicename = '*Pfad auf dem Server*'",
+      "description = '*Beschreibung*'",
+      "protocol = '*sftp|ftp|ftps*'",
+      "host = '*Name des FTP-Hosts*'",
+      "",
+      "[[provides.amqp]]",
+      "servicename = '*Queue- oder Topicname*'",
+      "description = '*Beschreibung*'",
+      "host = '*Name des Host*'",
+      "",
+      "[[provides.amqp]]",
+      "servicename = '*Queue- oder Topicname*'",
+      "description = '*Beschreibung*'",
+      "host = '*Name des Host*'",
+      "",
+      "[[provides.jms]]",
+      "servicename = '*Queue- oder Topicname*'",
+      "description = '*Beschreibung*'",
+      "host = '*Name des Host*'",
+      "",
+      "[[provides.ejb]]",
+      "servicename = '*Name der EJB*'",
+      "description = '*Beschreibung der EJB*'",
+      "protocol = '*t3s|t3*'",
+      "host = '*Name des Host*'",
+      "",
+      "[[provides.simpleService]]",
+      "description = '*Beschreibung*'",
+      "servicename = '/path/to/endpoint'",
+      "host = '*Name des Host*'"
+    ],
+    "description": "generiert die komplette Konfiguration eines IT-Systems"
+  },
+  "shoo header template": {
+    "prefix": "shoo_header",
+    "body": [
+      "itsystem = '${1:MeinSystem}'",
+      "",
+      "[pivio]",
+      "id = ''# ID aus Pivio, wird automatisch generiert",
+      "shortName = '$shortname'"
+    ],
+    "description": "generiert den Header einer IT-System-Konfiguration"
+  },
+  "Shoo depends template": {
+    "prefix": "shoo_depends",
+    "body": [
+      "[depends]",
+      "openapi =['*URL1', '*URL2*']",
+      "wsdl =['*URL1', '*URL2*']"
+    ],
+    "description": "URLs zum direkten Herunterladen von OpenAPI- und WSDL-Dateien"
+  },
+  "Shoo provides template": {
+    "prefix": "shoo_provides",
+    "body": [
+      "[provides]",
+      "openapi =['*URL1', '*URL2*']",
+      "wsdl =['*URL1', '*URL2*']"
+    ],
+    "description": "URLs zum direkten Herunterladen von OpenAPI- und WSDL-Dateien"
+  },
+  "Shoo depends.gitlab template": {
+    "prefix": "shoo_dep_gitlab",
+    "body": [
+      "[[depends.gitlab]]",
+      "id = '*ProjektID aus Gitlab*'",
+      "files = ['*Projektpfad zu OpenAPI 1*', '*Projektpfad zu OpenAPI 2*']"
+    ],
+    "description": "addressiert eine OpenAPI-/WSDL-Datei in Gitlab"
+  },
+  "shoo depends.itsystems template": {
+    "prefix": "shoo_dep_itsystem",
+    "body": [
+      "[[depends.itsystems]]",
+      "designator = '*ID aus Pivio*'",
+      "prefixes = ['*Präfix 1*', '*Präfix 2*' ]"
+    ],
+    "description": "Endpoints eines anderen IT-Systems aus pivio selektieren"
+  },
+  "shoo depends.filetransfer template": {
+    "prefix": "shoo_dep_ftp",
+    "body": [
+      "[[depends.filetransfer]]",
+      "servicename = '*Pfad auf dem Server*'",
+      "description = '*Beschreibung*'",
+      "protocol = '${1|sftp,ftp,ftps|}'",
+      "host = '*Name des FTP-Hosts*'"
+    ],
+    "description": "Einen FTP-Server beschreiben"
+  },
+  "shoo depends.amqp template": {
+    "prefix": "shoo_dep_amqp",
+    "body": [
+      "[[depends.amqp]]",
+      "servicename = '*Queue- oder Topicname*'",
+      "description = '*Beschreibung*'",
+      "host = '*Name des Host*'"
+    ],
+    "description": "Die Queue eines AMQP-Servers beschreiben"
+  },
+  "shoo depends.jms template": {
+    "prefix": "shoo_dep_jms",
+    "body": [
+      "[[depends.jms]]",
+      "servicename = '*Queue- oder Topicname*'",
+      "description = '*Beschreibung*'",
+      "host = '*Name des Host*'"
+    ],
+    "description": "Die Queue eines JMS-Servers beschreiben"
+  },
+  "shoo depends.ejb template": {
+    "prefix": "shoo_dep_ejb",
+    "body": [
+      "[[depends.ejb]]",
+      "servicename = '*Name der EJB*'",
+      "description = '*Beschreibung der EJB*'",
+      "protocol = '${1|t3s,t3|}'",
+      "host = '*Name des Host*'"
+    ],
+    "description": "Beschreibe die Abhängigkeit zu einer EJB"
+  },
+  "shoo depends.externalservices template": {
+    "prefix": "shoo_dep_external",
+    "body": [
+      "[[depends.externalservices]]",
+      "service = '*URL*'",
+      "description = '*Beschreibung*'",
+      "via = 'proxy.creditreform.de'"
+    ],
+    "description": "Beschreibe die Abhängigkeit zu einem externen IT-System außerhalb unseres Einflußbereichs(z.B. eines anderen Unternehmenm externen IT-System außerhalb unseres Einflußbereichs(z.B. eines anderen Unternehmenss"
+  },
+  "Shoo provides.gitlab template": {
+    "prefix": "shoo_prov_gitlab",
+    "body": [
+      "[[provides.gitlab]]",
+      "id = '*ProjektID aus Gitlab*'",
+      "files = ['*Projektpfad zu OpenAPI 1*', '*Projektpfad zu OpenAPI 2*']"
+    ],
+    "description": "addressiert eine OpenAPI-/WSDL-Datei in Gitlab"
+  },
+  "Shoo provides.excelFile template": {
+    "prefix": "shoo_prov_excel",
+    "body": [
+      "[[provides.excelFile]]",
+      "source = '*URL zur Exceldatei*'",
+      "type = '${1|KreditServices,unknown|}'",
+      "host = '*Name des Hosts*'"
+    ],
+    "description": "addressiert eine Exceldatei in einem spezifischen Format"
+  },
+  "shoo provides.filetransfer template": {
+    "prefix": "shoo_prov_ftp",
+    "body": [
+      "[[provides.filetransfer]]",
+      "servicename = '*Pfad auf dem Server*'",
+      "description = '*Beschreibung*'",
+      "protocol = '${1|sftp,ftp,ftps|}'",
+      "host = '*Name des FTP-Hosts*'"
+    ],
+    "description": "Einen FTP-Server beschreiben"
+  },
+  "shoo provides.amqp template": {
+    "prefix": "shoo_prov_amqp",
+    "body": [
+      "[[provides.amqp]]",
+      "servicename = '*Queue- oder Topicname*'",
+      "description = '*Beschreibung*'",
+      "host = '*Name des Host*'"
+    ],
+    "description": "Die Queue eines AMQP-Servers beschreiben"
+  },
+  "shoo provides.jms template": {
+    "prefix": "shoo_prov_jms",
+    "body": [
+      "[[depends.jms]]",
+      "servicename = '*Queue- oder Topicname*'",
+      "description = '*Beschreibung*'",
+      "host = '*Name des Host*'"
+    ],
+    "description": "Die Queue eines JMS-Servers beschreiben"
+  },
+  "shoo provides.ejb template": {
+    "prefix": "shoo_prov_ejb",
+    "body": [
+      "[[depends.ejb]]",
+      "servicename = '*Name der EJB*'",
+      "description = '*Beschreibung der EJB*'",
+      "protocol = '${1|t3s,t3|}'",
+      "host = '*Name des Host*'"
+    ],
+    "description": "Beschreibe die Abhängigkeit zu einer EJB"
+  },
+  "shoo provides.simpleService template": {
+    "prefix": "shoo_prov_simple",
+    "body": [
+      "[[provides.simpleService]]",
+      "description = '*Beschreibung*'",
+      "servicename = '/path/to/endpoint'",
+      "host = '*Name des Host*'"
+    ],
+    "description": "Beschreibe einen Endpunkt, der aus keiner anderen Quelle generiert werden kann"
+  }
+}
