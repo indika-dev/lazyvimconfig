@@ -68,6 +68,10 @@
       "type = 'KreditServices|unknown'",
       "host = '*Name des Hosts*'",
       "",
+      "[[provides.commentedWsdl]]",
+      "source = '*URL zur WSDL-Datei*'",
+      "comment = '*ein Kommentar für alle Endpoints*'",
+      "",
       "[[provides.filetransfer]]",
       "servicename = '*Pfad auf dem Server*'",
       "description = '*Beschreibung*'",
@@ -219,6 +223,15 @@
       "host = '*Name des Hosts*'"
     ],
     "description": "addressiert eine Exceldatei in einem spezifischen Format"
+  },
+  "Shoo provides.commentedWsdl template": {
+    "prefix": "shoo_prov_comwsdl",
+    "body": [
+      "[[provides.commentedWsdl]]",
+      "source = '*URL zur WSDL-Datei*'",
+      "comment = '*ein Kommentar für alle Endpoints*'"
+    ],
+    "description": "addressiert eine WSDL-Datei mit einem Kommentar, der auf alle Endpoints angewendet wird"
   },
   "shoo provides.filetransfer template": {
     "prefix": "shoo_prov_ftp",
