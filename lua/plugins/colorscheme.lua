@@ -7,7 +7,7 @@ local colorscheme = function()
       return "kanagawa"
     end
   else
-    return "kanagawa-dragon"
+    return "lackluster-hack" --"kanagawa-dragon"
   end
 end
 
@@ -39,6 +39,12 @@ return {
         light = "lotus",
       },
     },
+  },
+  {
+    "slugbyte/lackluster.nvim",
+    -- vim.cmd.colorscheme("lackluster")
+    -- vim.cmd.colorscheme("lackluster-hack")
+    -- vim.cmd.colorscheme("lackluster-mint")
   },
 
   -- Configure LazyVim to load kanagawa
