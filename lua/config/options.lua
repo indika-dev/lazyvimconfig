@@ -19,3 +19,8 @@ if vim.g.neovide then
   vim.g.neovide_hide_mouse_when_typing = true
   vim.g.neovide_refresh_rate_idle = 5
 end
+
+vim.g.kitty_navigator_no_mappings = 1
+
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+-- vim.opt.foldlevelstart = 0
