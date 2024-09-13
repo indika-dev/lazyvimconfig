@@ -2,7 +2,7 @@ local colorscheme = function()
   local _time = os.date("*t")
   if _time.hour >= 6 and _time.hour < 20 then
     if "stefan" == vim.env.USER then
-      vim.fn.system("kitty +kitten themes Kanagawa_light")
+      vim.fn.system("kitty +kitten themes Kanagawa_Light")
       return "kanagawa-lotus"
     else
       vim.fn.system("kitty +kitten themes Kanagawa")
