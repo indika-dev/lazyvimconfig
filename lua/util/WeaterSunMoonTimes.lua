@@ -1,3 +1,5 @@
+local DMath = require("util.DMath")
+
 --[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]][][][][][][][]
 -- Author = Mordasius
 -- Name = SunMoonTimes.lua
@@ -33,18 +35,21 @@
 -- 5.1.0 - 2019-07-13:  Corrected Windows/Unix timestamp conversion.  Corrected sunrise/sunset time
 --                      display when no sunrise or no sunset.
 --
-local class = require("util.class")
 
-local SunsetMoonrise = class({})
+local SunsetMoonrise = {}
 
-function SunsetMoonrise:Initialize()
-  --
-  -- this function is called when the script measure is initialized or reloaded
-  --
-  dawnAngle, duskAngle = 6, 6
-  DR = math.pi / 180
-  K1 = 15 * math.pi * 1.0027379 / 180
-end -- function Initialize
+-- set default values
+SunsetMoonrise.dawnangle, SunsetMoonrise.duskAngle = 6, 6
+SunsetMoonrise.DR = math.pi / 180
+SunsetMoonrise.K1 = 15 * math.pi * 1.0027379 / 180
+SunsetMoonrise.sunRiseSetTimes = { 6, 6, 6, 12, 13, 18, 18, 18, 24 }
+SunsetMoonrise.moonRiseSetTimes = { 0, 23.9 }
+SunsetMoonrise.NoSunRise, NoSunSet = False, False
+SunsetMoonrise.Sky = { 0, 0, 0 }
+SunsetMoonrise.Dec = { 0, 0, 0 }
+SunsetMoonrise.VHz = { 0, 0, 0 }
+SunsetMoonrise.RAn = { 0, 0, 0 }
+SunsetMoonrise.tDate = os.time(os.date("!*t"))
 
 ----------------------------------------------------------------------------------------------------
 function SunsetMoonrise:GetSunMoonTimes(nLatitude, nLongitude, nTimeZone, nTimestamp, nShiftTz, nTimeLZero, nTimeStyle)
@@ -69,15 +74,6 @@ function SunsetMoonrise:GetSunMoonTimes(nLatitude, nLongitude, nTimeZone, nTimes
   --
   local nLocalTz = (self:getTimeOffset() / 3600)
 
-  -- set default values
-  sunRiseSetTimes = { 6, 6, 6, 12, 13, 18, 18, 18, 24 }
-  moonRiseSetTimes = { 0, 23.9 }
-  NoSunRise, NoSunSet = False, False
-  Sky = { 0, 0, 0 }
-  Dec = { 0, 0, 0 }
-  VHz = { 0, 0, 0 }
-  RAn = { 0, 0, 0 }
-
   -- convert Windows timestamp (0 = 1/1/1601) to Unix/Lua timestamp (0 = 1/1/1970)
   -- nTimestamp = nTimestamp - 11644473600
 
@@ -86,38 +82,30 @@ function SunsetMoonrise:GetSunMoonTimes(nLatitude, nLongitude, nTimeZone, nTimes
   --        the resulting date will be incorrect.  If the current timezone is not the same as the
   --        one coming from the weather.com data, offset the timestamp by the difference.
   if nTimeZone == nLocalTz or not nShiftTz then
-    tDate = os.date("!*t", nTimestamp)
+    self.tDate = os.date("!*t", nTimestamp)
   else
-    tDate = os.date("!*t", nTimestamp - self:getTimeOffset() + (nTimeZone * 3600))
+    self.tDate = os.date("!*t", nTimestamp - self:getTimeOffset() + (nTimeZone * 3600))
   end
 
-  -- debugging
-  -- print("latitude = " .. nLatitude)
-  -- print("longitude = " .. nLongitude)
-  -- print("twc timezone = " .. nTimeZone)
-  -- print("my timezone = " .. nLocalTz)
-  -- print("raw timestamp = " .. nTimestamp)
-  -- print("timestamp = " .. os.date("%m/%d/%Y %I:%M:%S %p", os.time(tDate) - (os.date("*t")["isdst"] and 3600 or 0)))
-
   -- set time and gregorian date
-  self:setDateTime(nLatitude, nLongitude, nTimeZone, tDate)
+  self:setDateTime(nLatitude, nLongitude, nTimeZone, self.tDate)
 
   -- sun time calculations
-  self:calcSunRiseSet()
+  self:calcSunRiseSet({ 6, 6, 6, 12, 13, 18, 18, 18, 24 }) --self.sunRiseSetTimes)
   if NoSunRise or NoSunSet then
     -- adjust times to solar noon
-    sunRiseSetTimes[2] = (sunRiseSetTimes[2] - 12)
+    self.sunRiseSetTimes[2] = (self.sunRiseSetTimes[2] - 12)
     if NoSunRise then
-      sunRiseSetTimes[3] = sunRiseSetTimes[2] + 0.0001
+      self.sunRiseSetTimes[3] = self.sunRiseSetTimes[2] + 0.0001
     else
-      sunRiseSetTimes[3] = (sunRiseSetTimes[2] - 0.0001)
+      self.sunRiseSetTimes[3] = (self.sunRiseSetTimes[2] - 0.0001)
     end
-    sunRiseSetTimes[1] = 0
-    sunRiseSetTimes[4] = 0
+    self.sunRiseSetTimes[1] = 0
+    self.sunRiseSetTimes[4] = 0
   end
 
   -- moon time calculations
-  self:calcMoonRiseSet(nLatitude, nLongitude, jDateMoon, moonTimeOffset)
+  self:calcMoonRiseSet(nLatitude, nLongitude, self.jDateMoon, self.moonTimeOffset)
 
   -- calculate day length and sun angle
   -- NOTE:  Sunrise = 180, solar noon = 90, sunset = 0.
@@ -137,9 +125,9 @@ function SunsetMoonrise:GetSunMoonTimes(nLatitude, nLongitude, nTimeZone, nTimes
     local nSunSet -- sunset time in hours
     local nCurrTime -- current time in hours
 
-    nSunRise = sunRiseSetTimes[2]
-    nSunSet = sunRiseSetTimes[3]
-    nCurrTime = ((tDate.hour * 3600) + (tDate.min * 60)) / 3600
+    nSunRise = self.sunRiseSetTimes[2]
+    nSunSet = self.sunRiseSetTimes[3]
+    nCurrTime = ((self.tDate.hour * 3600) + (self.tDate.min * 60)) / 3600
     nDayLength = nSunSet - nSunRise
 
     -- convert fraction of day to fraction of 180 degrees, fix for night time (negative values)
@@ -156,16 +144,6 @@ function SunsetMoonrise:GetSunMoonTimes(nLatitude, nLongitude, nTimeZone, nTimes
     end
   end
 
-  -- debugging
-  -- print("dawn = " .. TimeString(sunRiseSetTimes[1], nTimeLZero, nTimeStyle) .. " (" .. sunRiseSetTimes[1] .. ")")
-  -- print("sunrise = " .. TimeString(sunRiseSetTimes[2], nTimeLZero, nTimeStyle) .. " (" .. sunRiseSetTimes[2] .. ")")
-  -- print("sunset = " .. TimeString(sunRiseSetTimes[3], nTimeLZero, nTimeStyle) .. " (" .. sunRiseSetTimes[3] .. ")")
-  -- print("twilight = " .. TimeString(sunRiseSetTimes[4], nTimeLZero, nTimeStyle) .. " (" .. sunRiseSetTimes[4] .. ")")
-  -- print("moonrise = " .. TimeString(moonRiseSetTimes[1], nTimeLZero, nTimeStyle) .. " (" .. moonRiseSetTimes[1] .. ")")
-  -- print("moonset = " .. TimeString(moonRiseSetTimes[2], nTimeLZero, nTimeStyle) .. " (" .. moonRiseSetTimes[2] .. ")")
-  -- print("day length = " .. TimeString(nDayLength, 0, 1) .. " (" .. nDayLength .. ")")
-  -- print("angle = " .. nAngle .. " deg")
-
   local result = {}
   result.latitude = nLatitude
   result.longitude = nLongitude
@@ -173,12 +151,12 @@ function SunsetMoonrise:GetSunMoonTimes(nLatitude, nLongitude, nTimeZone, nTimes
   result.mytimezone = nLocalTz
   result.rawtimestamp = nTimestamp
   result.timestamp = os.date("%m/%d/%Y %I:%M:%S %p", os.time(tDate) - (os.date("*t")["isdst"] and 3600 or 0))
-  result.dawn = self:TimeTable(sunRiseSetTimes[1], nTimeStyle)
-  result.sunrise = self:TimeTable(sunRiseSetTimes[2], nTimeStyle)
-  result.sunset = self:TimeTable(sunRiseSetTimes[3], nTimeStyle)
-  result.twilight = self:TimeTable(sunRiseSetTimes[4], nTimeStyle)
-  result.moonrise = self:TimeTable(moonRiseSetTimes[1], nTimeStyle)
-  result.moonset = self:TimeTable(moonRiseSetTimes[2], nTimeStyle)
+  result.dawn = self:TimeTable(self.sunRiseSetTimes[1], nTimeStyle)
+  result.sunrise = self:TimeTable(self.sunRiseSetTimes[2], nTimeStyle)
+  result.sunset = self:TimeTable(self.sunRiseSetTimes[3], nTimeStyle)
+  result.twilight = self:TimeTable(self.sunRiseSetTimes[4], nTimeStyle)
+  result.moonrise = self:TimeTable(self.moonRiseSetTimes[1], nTimeStyle)
+  result.moonset = self:TimeTable(self.moonRiseSetTimes[2], nTimeStyle)
   result.daylength = self:TimeTable(nDayLength, 1)
   result.angle = nAngle
 
@@ -188,29 +166,24 @@ end -- function GetSunMoonTimes
 ----------------------------------------------------------------------------------------------------
 
 function SunsetMoonrise:setDateTime(xlat, ylong, tmzone, today)
-  lat = xlat or 0
-  long = ylong or 0
-  timeOffset = tmzone
+  SunsetMoonrise.lat = xlat or 0
+  SunsetMoonrise.long = ylong or 0
+  SunsetMoonrise.timeOffset = tmzone
 
-  iTimeNow = ((today.hour * 3600) + (today.min * 60) + today.sec) / 3600
-  Gday = today.day
-  Gmonth = today.month
-  Gyear = today.year
+  SunsetMoonrise.iTimeNow = ((today.hour * 3600) + (today.min * 60) + today.sec) / 3600
+  SunsetMoonrise.Gday = today.day
+  SunsetMoonrise.Gmonth = today.month
+  SunsetMoonrise.Gyear = today.year
 
-  ----------- for testing ------
-  -- Gday = 12
-  -- Gmonth = 4
-  -- Gyear = 2013
-
-  moonTimeOffset = -60 * timeOffset
-  jDateSun = self:julian(Gyear, Gmonth, Gday) - (long / (15 * 24))
-  jDateMoon = self:julian(Gyear, Gmonth, Gday)
+  SunsetMoonrise.moonTimeOffset = -60 * self.timeOffset
+  SunsetMoonrise.jDateSun = self:julian(self.Gyear, self.Gmonth, self.Gday) - (self.long / (15 * 24))
+  SunsetMoonrise.jDateMoon = self:julian(self.Gyear, self.Gmonth, self.Gday)
 end -- function setDateTime
 
 ------------------------------------ [ sun time calculations ] -------------------------------------
 
 function SunsetMoonrise:midDay(Ftime)
-  local eqt = self:sunPosition(jDateSun + Ftime, 0)
+  local eqt = self:sunPosition(self.jDateSun + Ftime, 0)
   local noon = DMath.fixHour(12 - eqt)
   return noon
 end -- function midDay
@@ -219,9 +192,9 @@ function SunsetMoonrise:sunAngleTime(angle, Ftime, direction)
   --
   -- time at which sun reaches a specific angle below horizon
   --
-  local decl = self:sunPosition(jDateSun + Ftime, 1)
+  local decl = self:sunPosition(self.jDateSun + Ftime, 1)
   local noon = self:midDay(Ftime)
-  local t = (-DMath.Msin(angle) - DMath.Msin(decl) * DMath.Msin(lat)) / (DMath.Mcos(decl) * DMath.Mcos(lat))
+  local t = (-DMath.Msin(angle) - DMath.Msin(decl) * DMath.Msin(self.lat)) / (DMath.Mcos(decl) * DMath.Mcos(self.lat))
 
   if t > 1 then
     -- the sun doesn't rise today
@@ -236,15 +209,6 @@ function SunsetMoonrise:sunAngleTime(angle, Ftime, direction)
   t = 1 / 15 * DMath.arccos(t)
   return noon + ((direction == "CCW") and -t or t)
 end -- function sunAngleTime
-
---function asrTime(factor, Ftime)
---  --
---  -- compute asr time
---  --
---  local decl = sunPosition(jDateSun + Ftime, 1)
---  local angle = -DMath.arccot(factor + DMath.Mtan(math.abs(lat - decl)))
---  return sunAngleTime(angle, Ftime, "ASR")
---end
 
 function SunsetMoonrise:sunPosition(jd, Declination)
   --
@@ -283,21 +247,21 @@ end -- function julian
 
 function SunsetMoonrise:setTimes(sunRiseSetTimes)
   Ftimes = self:dayPortion(sunRiseSetTimes)
-  local dawn = self:sunAngleTime(dawnAngle, Ftimes[2], "CCW")
+  local dawn = self:sunAngleTime(self.dawnAngle, Ftimes[2], "CCW")
   local sunrise = self:sunAngleTime(self:riseSetAngle(), Ftimes[3], "CCW")
   local sunset = self:sunAngleTime(self:riseSetAngle(), Ftimes[8], "CW")
-  local dusk = self:sunAngleTime(duskAngle, Ftimes[7], "CW")
+  local dusk = self:sunAngleTime(self.duskAngle, Ftimes[7], "CW")
   return { dawn, sunrise, sunset, dusk }
 end -- function setTimes
 
-function SunsetMoonrise:calcSunRiseSet()
-  sunRiseSetTimes = self:setTimes(sunRiseSetTimes)
-  return self:adjustTimes(sunRiseSetTimes)
+function SunsetMoonrise:calcSunRiseSet(sunRiseSetTimes)
+  local result = self:setTimes(sunRiseSetTimes)
+  return self:adjustTimes(result)
 end -- function calcSunRiseSet
 
 function SunsetMoonrise:adjustTimes(sunRiseSetTimes)
   for i = 1, #sunRiseSetTimes do
-    sunRiseSetTimes[i] = sunRiseSetTimes[i] + (timeOffset - long / 15)
+    sunRiseSetTimes[i] = sunRiseSetTimes[i] + (self.timeOffset - long / 15)
   end
   sunRiseSetTimes = self:adjustHighLats(sunRiseSetTimes)
   return sunRiseSetTimes
@@ -317,7 +281,7 @@ function SunsetMoonrise:adjustHighLats(sunRiseSetTimes)
   -- adjust times for higher latitudes
   --
   local nightTime = self:timeDiff(sunRiseSetTimes[3], sunRiseSetTimes[2])
-  sunRiseSetTimes[1] = self:refineHLtimes(sunRiseSetTimes[1], sunRiseSetTimes[2], dawnAngle, nightTime, "CCW")
+  sunRiseSetTimes[1] = self:refineHLtimes(sunRiseSetTimes[1], sunRiseSetTimes[2], self.dawnAngle, nightTime, "CCW")
   return sunRiseSetTimes
 end -- function adjustHighLats
 
@@ -351,23 +315,6 @@ function SunsetMoonrise:timeDiff(time1, time2)
 end -- function timeDiff
 
 ----------------------------------- [ moon time calaculations ] ------------------------------------
-
-function SunsetMoonrise:sgn(x)
-  --
-  -- returns value for sign of argument
-  --
-  local rv
-  if x > 0 then
-    rv = 1
-  else
-    if x < 0 then
-      rv = -1
-    else
-      rv = 0
-    end
-  end
-  return rv
-end -- function sgn(x)
 
 function SunsetMoonrise:moon(jd)
   --
@@ -453,22 +400,22 @@ function SunsetMoonrise:test_moon(k, t0, lat, plx)
     RAn[3] = RAn[3] + 2 * math.pi
   end
 
-  ha[1] = t0 - RAn[1] + (k * K1)
-  ha[3] = t0 - RAn[3] + (k * K1) + K1
+  ha[1] = t0 - RAn[1] + (k * self.K1)
+  ha[3] = t0 - RAn[3] + (k * self.K1) + self.K1
   ha[2] = (ha[3] + ha[1]) / 2 -- hour angle at half hour
   Dec[2] = (Dec[3] + Dec[1]) / 2 -- declination at half hour
-  s = math.sin(DR * lat)
-  c = math.cos(DR * lat)
+  s = math.sin(self.DR * lat)
+  c = math.cos(self.DR * lat)
 
   -- refraction + sun semidiameter at horizon + parallax correction
-  z = math.cos(DR * (90.567 - 41.685 / plx))
+  z = math.cos(self.DR * (90.567 - 41.685 / plx))
 
   if k <= 0 then
     -- first call of function
     VHz[1] = s * math.sin(Dec[1]) + c * math.cos(Dec[1]) * math.cos(ha[1]) - z
   end
   VHz[3] = s * math.sin(Dec[3]) + c * math.cos(Dec[3]) * math.cos(ha[3]) - z
-  if self:sgn(VHz[1]) == self:sgn(VHz[3]) then
+  if DMath.sgn(VHz[1]) == DMath.sgn(VHz[3]) then
     -- no event this hour
     return VHz[3]
   end
@@ -504,10 +451,10 @@ function SunsetMoonrise:lst(lon, jd, z)
   --
   -- Local Sidereal Time for zone
   --
-  s = 24110.5 + 8640184.812999999 * jd / 36525 + 86636.6 * z + 86400 * lon
+  s = 24110.5 + 8640184.812999999 * jd / 36525 + 86636.6 * z + 86400 * self.lon
   s = s / 86400
   s = s - math.floor(s)
-  return s * 360 * DR
+  return s * 360 * self.DR
 end -- function lst
 
 function SunsetMoonrise:interpolate(f0, f1, f2, p)
@@ -529,7 +476,7 @@ function SunsetMoonrise:calcMoonRiseSet(lat, lon, jDateMoon, moonTimeOffset)
   local ph
   jd = jDateMoon - 2451545 -- Julian day relative to Jan 1.5, 2000
   local mp = {}
-  lon_local = lon
+  lon_local = self.lon
 
   for i = 1, 3 do
     mp[i] = {}
@@ -538,7 +485,7 @@ function SunsetMoonrise:calcMoonRiseSet(lat, lon, jDateMoon, moonTimeOffset)
     end
   end
 
-  lon_local = lon / 360
+  lon_local = self.lon / 360
   tz = zone / 24
   t0 = self:lst(lon_local, jd, tz) -- local sidereal time
   jd = jd + tz -- get moon position at start of day
@@ -709,52 +656,4 @@ function SunsetMoonrise:TimeTable(Ftime, nTimeStyle)
   return result
 end -- function TimeTable
 
----------------------------------------- [ math functions ] ----------------------------------------
-
-DMath = {
-  fix = function(a, b)
-    a = a - b * (math.floor(a / b))
-    return (a < 0) and a + b or a
-  end,
-  dtr = function(d)
-    return (d * math.pi) / 180
-  end,
-  rtd = function(r)
-    return (r * 180) / math.pi
-  end,
-  Msin = function(d)
-    return math.sin(DMath.dtr(d))
-  end,
-  Mcos = function(d)
-    return math.cos(DMath.dtr(d))
-  end,
-  Mtan = function(d)
-    return math.tan(DMath.dtr(d))
-  end,
-  arcsin = function(d)
-    return DMath.rtd(math.asin(d))
-  end,
-  arccos = function(d)
-    return DMath.rtd(math.acos(d))
-  end,
-  arctan = function(d)
-    return DMath.rtd(math.atan(d))
-  end,
-  arccot = function(x)
-    return DMath.rtd(math.atan(1 / x))
-  end,
-  arctan2 = function(y, x)
-    -- atan2 is deprecated
-    return DMath.rtd(math.atan(y, x))
-  end,
-  fixAngle = function(a)
-    return DMath.fix(a, 360)
-  end,
-  fixHour = function(a)
-    return DMath.fix(a, 24)
-  end,
-}
-
-local LocalSunsetMoonrise = SunsetMoonrise()
-LocalSunsetMoonrise:Initialize()
-return LocalSunsetMoonrise
+return SunsetMoonrise

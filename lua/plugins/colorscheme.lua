@@ -2,7 +2,9 @@ local SunsetMoonrise = require("util.WeaterSunMoonTimes")
 
 local colorscheme = function()
   local _time = os.date("*t")
-  local timestable = SunsetMoonrise:GetSunMoonTimes(51.09102, 6.5827, 1, 1730062503, "false", 0, 1)
+  local timestable = SunsetMoonrise:GetSunMoonTimes(51.09102, 6.5827, 1, os.time(os.date("!*t")), "false", 0, 1)
+  vim.notify("t1: " .. _time.hour .. " " .. timestable.sunrise.hours, vim.log.levels.ERROR)
+  vim.notify("t2: " .. _time.hour .. " " .. timestable.sunset.hours, vim.log.levels.ERROR)
   if _time.hour >= timestable.sunrise.hours and _time.hour < timestable.sunset.hours then
     if "stefan" == vim.env.USER then
       vim.fn.system("kitty +kitten themes Kanagawa_Light")
