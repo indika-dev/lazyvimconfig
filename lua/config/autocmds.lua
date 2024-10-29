@@ -40,6 +40,28 @@ vim.api.nvim_create_autocmd({ "BufWritePost" }, {
   end,
 })
 
+if vim.g.neovide then
+  -- Dieser Autocommand schaltet die relative Nummerierung aus, wenn wir mit dem Scrollen beginnen
+  vim.api.nvim_create_autocmd({ "WinScrolled" }, {
+    callback = function(ev)
+      if vim.o.relativenumber then
+        vim.cmd("set relativenumber norelativenumber")
+        vim.g.neovide_winscrolled = true
+      end
+    end,
+  })
+
+  -- Dieser Autocommand schaltet die relative Nummerierung ein, wenn wir untätig waren (mit dem Scrollen aufgehört haben)
+  vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+    callback = function(ev)
+      if not vim.o.relativenumber and vim.g.neovide_winscrolled then
+        vim.cmd("set relativenumber relativenumber")
+      end
+      vim.g.neovide_winscrolled = false
+    end,
+  })
+end
+
 -- vim.api.nvim_create_autocmd("ColorScheme", {
 --   pattern = "kanagawa",
 --   callback = function()
