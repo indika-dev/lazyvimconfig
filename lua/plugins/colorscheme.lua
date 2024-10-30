@@ -1,61 +1,9 @@
-local function splitTime(time)
-  local result = {}
-  local counter = 0
-  for part in (time .. ":"):gmatch("([^:]*):") do
-    if counter == 0 then
-      result.hour = tonumber(part)
-    elseif counter == 1 then
-      result.minutes = tonumber(part)
-    end
-    counter = counter + 1
-  end
-  return result
-end
-
-local stringtoboolean = { ["true"] = true, ["false"] = false }
-
-local function getSunMoonTimes()
-  local scriptFile = vim.fn.stdpath("config") .. "/lua/util/suntimes"
-  local scriptFileResult
-  local fh, err = assert(io.popen(scriptFile, "r"))
-  if fh then
-    scriptFileResult = fh:read()
-  end
-  -- local scriptFileResult, err = dofile(scriptFile) -- if script is executed with this lua instance, incorrect values are returned
-  if err then
-    local failureResult = {}
-    failureResult.dawn = 0
-    failureResult.sunrise = 0
-    failureResult.sunset = 0
-    failureResult.twilight = 0
-    failureResult.solarnoon = true
-    vim.notify("can't execute " .. scriptFile .. " : " .. err, vim.log.levels.ERROR)
-    return failureResult
-  end
-  local counter = 0
-  local result = {}
-  for part in (scriptFileResult .. ","):gmatch("([^,]*),") do
-    if counter == 0 then
-      result.dawn = splitTime(part)
-    elseif counter == 1 then
-      result.sunrise = splitTime(part)
-    elseif counter == 2 then
-      result.sunset = splitTime(part)
-    elseif counter == 3 then
-      result.twilight = splitTime(part)
-    elseif counter == 4 then
-      result.solarnoon = stringtoboolean[part]
-    end
-    counter = counter + 1
-  end
-  return result
-end
+local FromDuskTillDawn = require("util.WeaterSunMoonTimes")
 
 local colorscheme = function()
-  local _time = os.date("*t")
-  getSunMoonTimes()
-  local timestable = getSunMoonTimes()
-  if _time.hour >= timestable.sunrise.hour and _time.hour < timestable.sunset.hour then
+  local _nowepochtime = os.time(os.date("!*t"))
+  local epochTimesTable = FromDuskTillDawn.GetSunMoonTimes(51.09102, 6.5827, 1, _nowepochtime, "false", 0, 1)
+  if _nowepochtime >= epochTimesTable.sunrise and _nowepochtime < epochTimesTable.sunset then
     if "stefan" == vim.env.USER then
       vim.fn.system("kitty +kitten themes Kanagawa_Light")
       return "kanagawa-lotus"

@@ -1,6 +1,6 @@
 local M = {}
 
-M.dawnAngle, duskAngle = 6, 6
+M.dawnAngle, M.duskAngle = 6, 6
 M.DR = math.pi / 180
 M.K1 = 15 * math.pi * 1.0027379 / 180
 M.sunRiseSetTimes = { 6, 6, 6, 12, 13, 18, 18, 18, 24 }
@@ -15,33 +15,11 @@ M.timeOffset = 0
 M.moonTimeOffset = 0
 M.jDateSun = 0
 M.jDateMoon = 0
-
-M.Initialize = function()
-  --
-  -- this function is called when the script measure is initialized or reloaded
-  --
-  M.dawnAngle, M.duskAngle = 6, 6
-  M.DR = math.pi / 180
-  M.K1 = 15 * math.pi * 1.0027379 / 180
-end -- function Initialize
+M.NoSunRise, M.NoSunSet = false, false
 
 ----------------------------------------------------------------------------------------------------
 
-M.GetSunMoonTimes = function(
-  nLatitude,
-  nLongitude,
-  nTimeZone,
-  nTimestamp,
-  nShiftTz,
-  nTimeLZero,
-  nTimeStyle,
-  sSunrise,
-  sSunset,
-  sMoonrise,
-  sMoonset,
-  sDayLength,
-  sSunAngle
-)
+M.GetSunMoonTimes = function(nLatitude, nLongitude, nTimeZone, nTimestamp, nShiftTz)
   --
   -- This function returns a timestamp for the sunrise time for a specific location and date.  Can
   -- be called on demand via inline Lua.
@@ -51,14 +29,6 @@ M.GetSunMoonTimes = function(
   --         nTimeZone    = timezone offset for the location of interest (in hours)
   --         nTimestamp   = timestamp for location of interest (Windows timestamp)
   --         nShiftTz     = "true" to shift timestamp to the timezone of the location of interest*
-  --         nTimeLZero   = 0 (no leading zeros on hour), 1 (leading zeros on hour)
-  --         nTimeStyle   = 0 (12-hour clock) 1 (24-hour clock)
-  --         sSunrise     = (optional) name of string meter to display sunrise time
-  --         sSunset      = (optional) name of string meter to display sunset time
-  --         sMoonrise    = (optional) name of string meter to display moonrise time
-  --         sMoonset     = (optional) name of string meter to display moonset time
-  --         sDayLength   = (optional) name of string meter to display day length
-  --         sSunAngle    = (optional) name of variable to hold sun angle (in degrees)
   --
   -- Note: The "nShiftTz" parameter is used to offset a timestamp from your location to the timezone
   --       of the location of interest, if needed.  This case happens if you use a Time measure to
@@ -67,17 +37,25 @@ M.GetSunMoonTimes = function(
   --       (Tz = -8).  Set this value to "false" if the timestamp is ALREADY converted to the target
   --       timezone.
   --
-  M.Initialize()
   local nLocalTz = (M.getTimeOffset() / 3600)
 
   -- set default values
+  M.dawnAngle, M.duskAngle = 6, 6
+  M.DR = math.pi / 180
+  M.K1 = 15 * math.pi * 1.0027379 / 180
   M.sunRiseSetTimes = { 6, 6, 6, 12, 13, 18, 18, 18, 24 }
   M.moonRiseSetTimes = { 0, 23.9 }
-  local NoSunRise, NoSunSet = false, false
   M.Sky = { 0, 0, 0 }
   M.Dec = { 0, 0, 0 }
   M.VHz = { 0, 0, 0 }
   M.RAn = { 0, 0, 0 }
+  M.lat = 0
+  M.long = 0
+  M.timeOffset = 0
+  M.moonTimeOffset = 0
+  M.jDateSun = 0
+  M.jDateMoon = 0
+  M.NoSunRise, M.NoSunSet = false, false
 
   if vim.fn.has("win32") == 1 then
     -- convert Windows timestamp (0 = 1/1/1601) to Unix/Lua timestamp (0 = 1/1/1970)
@@ -159,34 +137,21 @@ M.GetSunMoonTimes = function(
   result.mytimezone = nLocalTz
   result.rawtimestamp = nTimestamp
   result.timestamp = os.date("%m/%d/%Y %I:%M:%S %p", os.time(tDate) - (os.date("*t")["isdst"] and 3600 or 0))
-  result.dawn = M.timeToTable(M.sunRiseSetTimes[1], nTimeStyle)
-  result.sunrise = M.timeToTable(M.sunRiseSetTimes[2], nTimeStyle)
-  result.sunset = M.timeToTable(M.sunRiseSetTimes[3], nTimeStyle)
-  result.twilight = M.timeToTable(M.sunRiseSetTimes[4], nTimeStyle)
-  result.moonrise = M.timeToTable(M.moonRiseSetTimes[1], nTimeStyle)
-  result.moonset = M.timeToTable(M.moonRiseSetTimes[2], nTimeStyle)
-  result.daylength = M.timeToTable(nDayLength, 1)
+  -- result.dawn = M.timeToTable(M.sunRiseSetTimes[1], nTimeStyle) -- just a reminder
+  -- TimeString(sunRiseSetTimes[2], nTimeLZero, nTimeStyle)
+  result.dawn = M.timeToUnixEpoch(M.sunRiseSetTimes[1], tDate)
+  result.sunrise = M.timeToUnixEpoch(M.sunRiseSetTimes[2], tDate)
+  result.sunset = M.timeToUnixEpoch(M.sunRiseSetTimes[3], tDate)
+  result.twilight = M.timeToUnixEpoch(M.sunRiseSetTimes[4], tDate)
+  result.moonrise = M.timeToUnixEpoch(M.moonRiseSetTimes[1], tDate)
+  result.moonset = M.timeToUnixEpoch(M.moonRiseSetTimes[2], tDate)
+  -- result.daylength = M.timeToTable(nDayLength, 1) -- just a reminder
+  result.daylength = nDayLength
   result.angle = nAngle
-  result.solarnoon = NoSunRise == 1 or NoSunSet == 1
+  result.polarday = M.NoSunSet
+  result.polarnight = M.NoSunRise
 
   return result
-  --
-  -- NOTE save solar noon
-  -- save the results to the meters/variables and exit
-  --
-  -- if NoSunRise or NoSunSet then
-  --   if sSunrise ~= nil then SKIN:Bang("!SetOption", sSunrise,   "Text", "----") end
-  --   if sSunset  ~= nil then SKIN:Bang("!SetOption", sSunset,    "Text", "----") end
-  -- else
-  --   if sSunrise ~= nil then SKIN:Bang("!SetOption", sSunrise,   "Text", TimeString(sunRiseSetTimes[2], nTimeLZero, nTimeStyle)) end
-  --   if sSunset  ~= nil then SKIN:Bang("!SetOption", sSunset,    "Text", TimeString(sunRiseSetTimes[3], nTimeLZero, nTimeStyle)) end
-  -- end
-  -- if sMoonrise  ~= nil then SKIN:Bang("!SetOption", sMoonrise,  "Text", TimeString(moonRiseSetTimes[1], nTimeLZero, nTimeStyle)) end
-  -- if sMoonset   ~= nil then SKIN:Bang("!SetOption", sMoonset,   "Text", TimeString(moonRiseSetTimes[2], nTimeLZero, nTimeStyle)) end
-  -- if sDayLength ~= nil then SKIN:Bang("!SetOption", sDayLength, "Text", TimeString(nDayLength, 0, 1)) end
-  -- if sSunAngle  ~= nil then SKIN:Bang("!SetVariable", sSunAngle,  nAngle) end
-  --
-  -- return 1
 end -- function GetSunMoonTimes
 
 ----------------------------------------------------------------------------------------------------
@@ -224,11 +189,11 @@ M.sunAngleTime = function(angle, Ftime, direction)
 
   if t > 1 then
     -- the sun doesn't rise today
-    NoSunRise = 1
+    M.NoSunRise = true
     return noon
   elseif t < -1 then
     -- the sun doesn't set today
-    NoSunSet = 1
+    M.NoSunSet = true
     return noon
   end
 
@@ -572,6 +537,24 @@ M.timeToTable = function(Ftime, nTimeStyle)
   return result
 end -- function TimeTable
 
+M.timeToUnixEpoch = function(Ftime, tDate)
+  --
+  -- convert time to epoch time
+  --
+  -- Where:  Ftime      = floating point time (hours with fractional minutes)
+  --         tDate = date of interest
+  --
+  local toWindowsEpochTime = 0
+  if vim.fn.has("win32") == 1 then
+    -- convert Unix/Lua timestamp (0 = 1/1/1970) to Windows timestamp (0 = 1/1/1601)
+    toWindowsEpochTime = 11644473600
+  end
+  local hours = math.floor(Ftime)
+  local minutes = math.floor((Ftime - hours) * 60)
+  return os.time({ year = tDate.year, month = tDate.month, day = tDate.day, hour = hours, min = minutes, sec = 0 })
+    + toWindowsEpochTime
+end
+
 StringUtils = {
   twoDigitsFormat = function(num)
     --
@@ -684,31 +667,18 @@ DMath = {
     return DMath.rtd(math.atan(1 / x))
   end,
   arctan2 = function(y, x)
-    -- atan2 is deprecated
-    return DMath.rtd(math.atan(y, x))
+    if jit then
+      return DMath.rtd(math.atan2(y, x))
+    else
+      -- atan2 is deprecated
+      return DMath.rtd(math.atan(y, x))
+    end
   end,
   fixAngle = function(a)
     return DMath.fix(a, 360)
   end,
   fixHour = function(a)
     return DMath.fix(a, 24)
-  end,
-}
-
-OSUtils = {
-  getOS = function()
-    -- ask LuaJIT first
-    if jit then
-      return jit.os
-    end
-    local osname
-    -- Unix, Linux variants
-    local fh, err = assert(io.popen("uname -o 2>/dev/null", "r"))
-    if fh then
-      osname = fh:read()
-    end
-
-    return osname or "Windows"
   end,
 }
 
