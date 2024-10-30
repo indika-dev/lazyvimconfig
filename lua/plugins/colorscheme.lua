@@ -1,9 +1,11 @@
 local FromDuskTillDawn = require("util.WeaterSunMoonTimes")
+local uv = vim.uv
 
-local colorscheme = function()
+colorscheme = function()
   local _nowepochtime = os.time(os.date("!*t"))
   local epochTimesTable = FromDuskTillDawn.GetSunMoonTimes(51.09102, 6.5827, 1, _nowepochtime, "false", 0, 1)
   if _nowepochtime >= epochTimesTable.sunrise and _nowepochtime < epochTimesTable.sunset then
+    setTimeout((epochTimesTable.sunset - _nowepochtime) * 1000, colorscheme)
     if "stefan" == vim.env.USER then
       vim.fn.system("kitty +kitten themes Kanagawa_Light")
       return "kanagawa-lotus"
@@ -12,9 +14,38 @@ local colorscheme = function()
       return "kanagawa"
     end
   else
+    local _tomorrowepochtime = epochTimesTable.sunrise + 24 * 60 * 60
+    epochTimesTable = FromDuskTillDawn.GetSunMoonTimes(51.09102, 6.5827, 1, _tomorrowepochtime, "false", 0, 1)
+    setTimeout((epochTimesTable.sunrise - _nowepochtime) * 1000, colorscheme)
     vim.fn.system("kitty +kitten themes Kanagawabones")
     return "lackluster-hack" --"kanagawa-dragon"
   end
+end
+
+-- Creating a simple setTimeout wrapper
+function setTimeout(timeout, callback)
+  local timer = uv.new_timer()
+  timer:start(timeout, 0, function()
+    timer:stop()
+    timer:close()
+    callback()
+  end)
+  return timer
+end
+
+-- Creating a simple setInterval wrapper
+local function setInterval(interval, callback)
+  local timer = uv.new_timer()
+  timer:start(interval, interval, function()
+    callback()
+  end)
+  return timer
+end
+
+-- And clearInterval
+local function clearInterval(timer)
+  timer:stop()
+  timer:close()
 end
 
 return {
