@@ -1,36 +1,55 @@
-local FromDuskTillDawn = require("util.WeaterSunMoonTimes")
-local uv = vim.uv
+local FromDuskTillDawn = require("util.SunMoonTimes")
 
-colorscheme = function()
-  local _nowepochtime = os.time(os.date("!*t"))
-  local epochTimesTable = FromDuskTillDawn.GetSunMoonTimes(51.09102, 6.5827, 1, _nowepochtime, "false", 0, 1)
-  if _nowepochtime >= epochTimesTable.sunrise and _nowepochtime < epochTimesTable.sunset then
-    setTimeout((epochTimesTable.sunset - _nowepochtime) * 1000, colorscheme)
-    if "stefan" == vim.env.USER then
-      vim.fn.system("kitty +kitten themes Kanagawa_Light")
-      return "kanagawa-lotus"
-    else
-      vim.fn.system("kitty +kitten themes Kanagawa")
-      return "kanagawa"
-    end
-  else
-    local _tomorrowepochtime = epochTimesTable.sunrise + 24 * 60 * 60
-    epochTimesTable = FromDuskTillDawn.GetSunMoonTimes(51.09102, 6.5827, 1, _tomorrowepochtime, "false", 0, 1)
-    setTimeout((epochTimesTable.sunrise - _nowepochtime) * 1000, colorscheme)
-    vim.fn.system("kitty +kitten themes Kanagawabones")
-    return "lackluster-hack" --"kanagawa-dragon"
-  end
+local function isKitty()
+  return os.getenv("KITTY_WINDOW_ID") ~= nil
 end
 
--- Creating a simple setTimeout wrapper
-function setTimeout(timeout, callback)
-  local timer = uv.new_timer()
-  timer:start(timeout, 0, function()
-    timer:stop()
-    timer:close()
-    callback()
+local colorscheme
+
+local scheduler = {}
+
+scheduler.timer = vim.uv.new_timer()
+
+scheduler.scheduleColorSchemeChange = function(futureTimestamp)
+  -- ensure that only one timer is active
+  scheduler.timer:stop()
+  scheduler.timer:close()
+  scheduler.timer = vim.uv.new_timer()
+  local _nowepochtime = os.time(os.date("!*t"))
+  local timeoutInSec = futureTimestamp - _nowepochtime + 1
+  scheduler.timer:start(timeoutInSec * 1000, 0, function()
+    scheduler.timer:stop()
+    scheduler.timer:close()
+    vim.schedule_wrap(colorscheme)
   end)
-  return timer
+  vim.notify("scheduled colorscheme change @" .. os.date("%c", _nowepochtime + timeoutInSec), vim.log.levels.INFO)
+end
+
+colorscheme = function()
+  if "maassens" == vim.env.USER then
+    local _nowepochtime = os.time(os.date("!*t"))
+    local epochTimesTable =
+      FromDuskTillDawn.GetSunMoonTimes(51.09102, 6.5827, 1, os.time(os.date("!*t")), "false", 0, 1)
+    if _nowepochtime >= epochTimesTable.sunrise and _nowepochtime < epochTimesTable.sunset then
+      scheduler.scheduleColorSchemeChange(epochTimesTable.sunset)
+      if isKitty() then
+        vim.fn.system("kitty +kitten themes Kanagawa_Light")
+      end
+      return "kanagawa-lotus"
+    else
+      local _tomorrowepochtime = epochTimesTable.sunrise + 24 * 60 * 60
+      scheduler.scheduleColorSchemeChange(_tomorrowepochtime)
+      if isKitty() then
+        vim.fn.system("kitty +kitten themes Kanagawabones")
+      end
+      return "lackluster-hack" --"kanagawa-dragon"
+    end
+  else
+    if isKitty() then
+      vim.fn.system("kitty +kitten themes Kanagawa")
+    end
+    return "kanagawa"
+  end
 end
 
 -- Creating a simple setInterval wrapper
