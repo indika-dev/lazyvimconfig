@@ -26,7 +26,7 @@ scheduler.scheduleColorSchemeChange = function(futureTimestamp)
 end
 
 colorscheme = function()
-  if "maassens" == vim.env.USER then
+  if "stefan" == vim.env.USER then
     local _nowepochtime = os.time(os.date("!*t"))
     local epochTimesTable =
       FromDuskTillDawn.GetSunMoonTimes(51.09102, 6.5827, 1, os.time(os.date("!*t")), "false", 0, 1)
