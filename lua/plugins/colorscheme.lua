@@ -20,7 +20,10 @@ scheduler.scheduleColorSchemeChange = function(futureTimestamp)
   scheduler.timer:start(timeoutInSec * 1000, 0, function()
     scheduler.timer:stop()
     scheduler.timer:close()
-    vim.schedule_wrap(colorscheme)
+    vim.schedule_wrap(function()
+      local _colorscheme = "colorscheme " .. colorscheme()
+      vim.cmd(_colorscheme)
+    end)
   end)
   vim.notify("scheduled colorscheme change @" .. os.date("%c", _nowepochtime + timeoutInSec), vim.log.levels.INFO)
 end
@@ -28,8 +31,7 @@ end
 colorscheme = function()
   if "stefan" == vim.env.USER then
     local _nowepochtime = os.time(os.date("!*t"))
-    local epochTimesTable =
-      FromDuskTillDawn.GetSunMoonTimes(51.09102, 6.5827, 1, os.time(os.date("!*t")), "false", 0, 1)
+    local epochTimesTable = FromDuskTillDawn.GetSunMoonTimes(51.09102, 6.5827, 0, os.time(os.date("!*t")), false)
     if _nowepochtime >= epochTimesTable.sunrise and _nowepochtime < epochTimesTable.sunset then
       scheduler.scheduleColorSchemeChange(epochTimesTable.sunset)
       if isKitty() then
