@@ -1,4 +1,5 @@
-local FromDuskTillDawn = require("util.SunMoonTimes")
+---@module 'util.SunTimes'
+local FromDuskTillDawn = require("util.SunTimes")
 
 local function isKitty()
   return os.getenv("KITTY_WINDOW_ID") ~= nil
@@ -31,7 +32,7 @@ end
 colorscheme = function()
   if "stefan" == vim.env.USER then
     local _nowepochtime = os.time(os.date("!*t"))
-    local epochTimesTable = FromDuskTillDawn.GetSunMoonTimes(51.09102, 6.5827, 0, os.time(os.date("!*t")), false)
+    local epochTimesTable = FromDuskTillDawn.GetSunTimes(51.09102, 6.5827)
     if _nowepochtime >= epochTimesTable.sunrise and _nowepochtime < epochTimesTable.sunset then
       scheduler.scheduleColorSchemeChange(epochTimesTable.sunset)
       if isKitty() then
@@ -44,7 +45,7 @@ colorscheme = function()
       if isKitty() then
         vim.fn.system("kitty +kitten themes Kanagawabones")
       end
-      return "lackluster-hack" --"kanagawa-dragon"
+      return "kanagawa-dragon" -- "lackluster-hack"
     end
   else
     if isKitty() then
