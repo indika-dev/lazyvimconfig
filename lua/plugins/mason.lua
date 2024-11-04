@@ -13,7 +13,12 @@ return {
         "yamlfmt",
         "yamllint",
         "djlint",
+        "jdtls",
+        "yq",
       },
+      -- registries = {
+      --   "file:~/workspace/mason-registry",
+      -- },
     },
   },
 }
