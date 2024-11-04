@@ -40,6 +40,13 @@ vim.api.nvim_create_autocmd({ "BufWritePost" }, {
   end,
 })
 
+vim.api.nvim_create_autocmd({ "FileType" }, {
+  pattern = { "xslt" },
+  callback = function()
+    vim.b.autoformat = false
+  end,
+})
+
 if vim.g.neovide then
   -- Dieser Autocommand schaltet die relative Nummerierung aus, wenn wir mit dem Scrollen beginnen
   vim.api.nvim_create_autocmd({ "WinScrolled" }, {
