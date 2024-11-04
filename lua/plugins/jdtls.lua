@@ -3,6 +3,10 @@ local jdtls_utils = require("util.jdtlsUtils")
 return {
   {
     "mfussenegger/nvim-jdtls",
+    ft = "java",
+    dependencies = {
+      "JavaHello/spring-boot.nvim",
+    },
     opts = function()
       local initial_runtimes = function()
         return {
@@ -66,6 +70,9 @@ return {
           vim.fn.glob(
             require("mason-registry").get_package("java-test"):get_install_path() .. "/extension/server/org.jacoco*.jar"
           ),
+          vim.fn.glob(
+            require("mason-registry").get_package("java-test"):get_install_path() .. "/extension/server/org.jacoco*.jar"
+          ),
         }
         local result = {}
         for _, jar_pattern in ipairs(jar_patterns) do
@@ -75,6 +82,7 @@ return {
             end
           end
         end
+        vim.list_extend(result, require("spring_boot").java_extensions())
         return result
       end
       local jdtls_settings = function()
@@ -245,5 +253,14 @@ return {
         test = { config_overrides = {} },
       }
     end,
+    -- config = function(_, opts)
+    --   require("lspconfig").jdtls.setup(opts)
+    --   local status_sts, spring_boot = pcall(require, "spring_boot")
+    --   if status_sts then
+    --     spring_boot.init_lsp_commands()
+    --   else
+    --     vim.notify("SpringBoot Tools couldn't be started", vim.log.levels.ERROR)
+    --   end
+    -- end,
   },
 }
