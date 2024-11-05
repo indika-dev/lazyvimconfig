@@ -3,10 +3,7 @@ local jdtls_utils = require("util.jdtlsUtils")
 return {
   {
     "mfussenegger/nvim-jdtls",
-    ft = "java",
-    dependencies = {
-      "JavaHello/spring-boot.nvim",
-    },
+    ft = "<never>",
     opts = function()
       local initial_runtimes = function()
         return {
