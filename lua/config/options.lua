@@ -26,3 +26,6 @@ vim.g.kitty_navigator_no_mappings = 1
 
 vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 -- vim.opt.foldlevelstart = 0
+
+vim.opt.spelllang = "en_us"
+vim.opt.spell = true
