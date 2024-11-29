@@ -5,6 +5,16 @@ local function isKitty()
   return os.getenv("KITTY_WINDOW_ID") ~= nil
 end
 
+function file_exists(name)
+  local f = io.open(name, "r")
+  if f ~= nil then
+    io.close(f)
+    return true
+  else
+    return false
+  end
+end
+
 local colorscheme
 
 local scheduler = {}
@@ -26,14 +36,18 @@ scheduler.scheduleColorSchemeChange = function(futureTimestamp)
       vim.cmd(_colorscheme)
     end)
   end)
-  vim.notify("scheduled colorscheme change @" .. os.date("%c", _nowepochtime + timeoutInSec), vim.log.levels.INFO)
+  -- vim.notify("scheduled colorscheme change @" .. os.date("%c", _nowepochtime + timeoutInSec), vim.log.levels.INFO)
 end
 
 colorscheme = function()
   if "stefan" == vim.env.USER then
     local _nowepochtime = os.time(os.date("!*t"))
     local epochTimesTable = FromDuskTillDawn.GetSunTimes(51.09102, 6.5827)
-    if _nowepochtime >= epochTimesTable.sunrise and _nowepochtime < epochTimesTable.sunset then
+    if
+      _nowepochtime >= epochTimesTable.sunrise
+      and _nowepochtime < epochTimesTable.sunset
+      and "sunrise" == os.getenv("NVIM_THEME_SELECTOR")
+    then
       scheduler.scheduleColorSchemeChange(epochTimesTable.sunset)
       if isKitty() then
         vim.fn.system("kitty +kitten themes Kanagawa_Light")
