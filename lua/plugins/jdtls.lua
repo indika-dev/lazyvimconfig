@@ -1,10 +1,66 @@
 local jdtls_utils = require("util.jdtlsUtils")
+local mason_registry = require("mason-registry")
+
+local deprecated_add_jars_to_bundles = function()
+  local jar_patterns = {
+    vim.fn.glob(mason_registry.get_package("vscode-java-decompiler"):get_install_path() .. "/server/dg.jdt*.jar"),
+    vim.fn.glob(
+      mason_registry.get_package("java-debug-adapter"):get_install_path()
+        .. "/extension/server/com.microsoft.java.debug.plugin-*.jar"
+    ),
+    vim.fn.glob(
+      mason_registry.get_package("java-test"):get_install_path()
+        .. "/extension/server/com.microsoft.java.test.plugin-*.jar"
+    ),
+    vim.fn.glob(
+      mason_registry.get_package("java-test"):get_install_path()
+        .. "/extension/server/com.microsoft.java.test.plugin-*.jar"
+    ),
+    vim.fn.glob(mason_registry.get_package("java-test"):get_install_path() .. "/extension/server/junit-*.jar"),
+    vim.fn.glob(
+      mason_registry.get_package("java-test"):get_install_path() .. "/extension/server/org.apiguardian.api_*.jar"
+    ),
+    vim.fn.glob(
+      mason_registry.get_package("java-test"):get_install_path()
+        .. "/extension/server/org.eclipse.jdt.junit4.runtime_*.jar"
+    ),
+    vim.fn.glob(
+      mason_registry.get_package("java-test"):get_install_path()
+        .. "/extension/server/org.eclipse.jdt.junit5.runtime_*.jar"
+    ),
+    vim.fn.glob(mason_registry.get_package("java-test"):get_install_path() .. "/extension/server/org.opentest4j_*.jar"),
+    vim.fn.glob(mason_registry.get_package("java-test"):get_install_path() .. "/extension/server/jacoco*.jar"),
+    vim.fn.glob(mason_registry.get_package("java-test"):get_install_path() .. "/extension/server/org.jacoco*.jar"),
+    vim.fn.glob(mason_registry.get_package("java-test"):get_install_path() .. "/extension/server/org.jacoco*.jar"),
+  }
+  local result = {}
+  for _, jar_pattern in ipairs(jar_patterns) do
+    for _, bundle in ipairs(vim.split(jar_pattern, "\n", {})) do
+      if bundle ~= {} then
+        table.insert(result, bundle)
+      end
+    end
+  end
+end
 
 return {
   {
     "mfussenegger/nvim-jdtls",
     ft = "<never>",
     opts = function()
+      local add_jars_from_package = function(package_name, key_prefix, list)
+        local mason_package = mason_registry.get_package(package_name)
+        if mason_package:is_installed() then
+          local install_path = mason_package:get_install_path()
+          mason_package:get_receipt():if_present(function(recipe)
+            for key, value in pairs(recipe.links.share) do
+              if key:sub(1, #key_prefix) == key_prefix then
+                table.insert(list, install_path .. "/" .. value)
+              end
+            end
+          end)
+        end
+      end
       local initial_runtimes = function()
         return {
           {
@@ -26,60 +82,11 @@ return {
         }
       end
       local bundles = function()
-        local jar_patterns = {
-          vim.fn.glob(
-            require("mason-registry").get_package("vscode-java-decompiler"):get_install_path() .. "/server/dg.jdt*.jar"
-          ),
-          vim.fn.glob(
-            require("mason-registry").get_package("java-debug-adapter"):get_install_path()
-              .. "/extension/server/com.microsoft.java.debug.plugin-*.jar"
-          ),
-          vim.fn.glob(
-            require("mason-registry").get_package("java-test"):get_install_path()
-              .. "/extension/server/com.microsoft.java.test.plugin-*.jar"
-          ),
-          vim.fn.glob(
-            require("mason-registry").get_package("java-test"):get_install_path()
-              .. "/extension/server/com.microsoft.java.test.plugin-*.jar"
-          ),
-          vim.fn.glob(
-            require("mason-registry").get_package("java-test"):get_install_path() .. "/extension/server/junit-*.jar"
-          ),
-          vim.fn.glob(
-            require("mason-registry").get_package("java-test"):get_install_path()
-              .. "/extension/server/org.apiguardian.api_*.jar"
-          ),
-          vim.fn.glob(
-            require("mason-registry").get_package("java-test"):get_install_path()
-              .. "/extension/server/org.eclipse.jdt.junit4.runtime_*.jar"
-          ),
-          vim.fn.glob(
-            require("mason-registry").get_package("java-test"):get_install_path()
-              .. "/extension/server/org.eclipse.jdt.junit5.runtime_*.jar"
-          ),
-          vim.fn.glob(
-            require("mason-registry").get_package("java-test"):get_install_path()
-              .. "/extension/server/org.opentest4j_*.jar"
-          ),
-          vim.fn.glob(
-            require("mason-registry").get_package("java-test"):get_install_path() .. "/extension/server/jacoco*.jar"
-          ),
-          vim.fn.glob(
-            require("mason-registry").get_package("java-test"):get_install_path() .. "/extension/server/org.jacoco*.jar"
-          ),
-          vim.fn.glob(
-            require("mason-registry").get_package("java-test"):get_install_path() .. "/extension/server/org.jacoco*.jar"
-          ),
-        }
         local result = {}
-        for _, jar_pattern in ipairs(jar_patterns) do
-          for _, bundle in ipairs(vim.split(jar_pattern, "\n", {})) do
-            if bundle ~= {} then
-              table.insert(result, bundle)
-            end
-          end
-        end
-        vim.list_extend(result, require("spring_boot").java_extensions())
+        add_jars_from_package("vscode-spring-boot-tools", "vscode-spring-boot-tools/jdtls/", result)
+        add_jars_from_package("vscode-java-decompiler", "vscode-java-decompiler/bundles/", result)
+        add_jars_from_package("java-debug-adapter", "java-debug-adapter/", result)
+        add_jars_from_package("java-test", "java-test/", result)
         return result
       end
       local jdtls_settings = function()
