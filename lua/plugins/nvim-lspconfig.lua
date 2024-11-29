@@ -15,6 +15,26 @@ return {
       codelens = {
         enabled = false,
       },
+      servers = {
+        lemminx = {
+          settings = {
+            xsl = {
+              format = {
+                enabled = true,
+                insertSpaces = true,
+                tabSize = 2,
+              },
+            },
+            xslt = {
+              format = {
+                enabled = true,
+                insertSpaces = true,
+                tabSize = 2,
+              },
+            },
+          },
+        },
+      },
     },
   },
 }

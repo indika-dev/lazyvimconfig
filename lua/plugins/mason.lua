@@ -16,9 +16,10 @@ return {
         "jdtls",
         "yq",
       },
-      -- registries = {
-      --   "file:~/workspace/mason-registry",
-      -- },
+      registries = {
+        "file:~/workspace/mason-registry",
+        -- "github:indika-dev/mason-registry",
+      },
     },
   },
 }

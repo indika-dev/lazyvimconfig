@@ -12,6 +12,7 @@
       "[depends]",
       "openapi =['*URL1', '*URL2*']",
       "wsdl =['*URL1', '*URL2*']",
+      "wadl =['*URL1', '*URL2*']",
       "",
       "[[depends.gitlab]]",
       "id = '*ProjektID aus Gitlab*'",
@@ -58,6 +59,7 @@
       "[provides]",
       "openapi =['*URL1', '*URL2*']",
       "wsdl =['*URL1', '*URL2*']",
+      "wadl =['*URL1', '*URL2*']",
       "",
       "[[provides.gitlab]]",
       "id = '*ProjektID aus Gitlab*'",
@@ -67,10 +69,6 @@
       "source = '*URL zur Exceldatei*'",
       "type = 'KreditServices|unknown'",
       "host = '*Name des Hosts*'",
-      "",
-      "[[provides.commentedWsdl]]",
-      "source = '*URL zur WSDL-Datei*'",
-      "comment = '*ein Kommentar für alle Endpoints*'",
       "",
       "[[provides.filetransfer]]",
       "servicename = '*Pfad auf dem Server*'",
@@ -122,18 +120,20 @@
     "body": [
       "[depends]",
       "openapi =['*URL1', '*URL2*']",
-      "wsdl =['*URL1', '*URL2*']"
+      "wsdl =['*URL1', '*URL2*']",
+      "wadl =['*URL1', '*URL2*']"
     ],
-    "description": "URLs zum direkten Herunterladen von OpenAPI- und WSDL-Dateien"
+    "description": "URLs zum direkten Herunterladen von OpenAPI-, WADL- und WSDL-Dateien"
   },
   "Shoo provides template": {
     "prefix": "shoo_provides",
     "body": [
       "[provides]",
       "openapi =['*URL1', '*URL2*']",
-      "wsdl =['*URL1', '*URL2*']"
+      "wsdl =['*URL1', '*URL2*']",
+      "wadl =['*URL1', '*URL2*']"
     ],
-    "description": "URLs zum direkten Herunterladen von OpenAPI- und WSDL-Dateien"
+    "description": "URLs zum direkten Herunterladen von OpenAPI-, WADL- und WSDL-Dateien"
   },
   "Shoo depends.gitlab template": {
     "prefix": "shoo_dep_gitlab",
@@ -142,7 +142,7 @@
       "id = '*ProjektID aus Gitlab*'",
       "files = ['*Projektpfad zu OpenAPI 1*', '*Projektpfad zu OpenAPI 2*']"
     ],
-    "description": "addressiert eine OpenAPI-/WSDL-Datei in Gitlab"
+    "description": "addressiert eine OpenAPI-/WADL-/WSDL-Datei in Gitlab"
   },
   "shoo depends.itsystems template": {
     "prefix": "shoo_dep_itsystem",
@@ -212,7 +212,7 @@
       "id = '*ProjektID aus Gitlab*'",
       "files = ['*Projektpfad zu OpenAPI 1*', '*Projektpfad zu OpenAPI 2*']"
     ],
-    "description": "addressiert eine OpenAPI-/WSDL-Datei in Gitlab"
+    "description": "addressiert eine OpenAPI-/WADL-/WSDL-Datei in Gitlab"
   },
   "Shoo provides.excelFile template": {
     "prefix": "shoo_prov_excel",
@@ -223,15 +223,6 @@
       "host = '*Name des Hosts*'"
     ],
     "description": "addressiert eine Exceldatei in einem spezifischen Format"
-  },
-  "Shoo provides.commentedWsdl template": {
-    "prefix": "shoo_prov_comwsdl",
-    "body": [
-      "[[provides.commentedWsdl]]",
-      "source = '*URL zur WSDL-Datei*'",
-      "comment = '*ein Kommentar für alle Endpoints*'"
-    ],
-    "description": "addressiert eine WSDL-Datei mit einem Kommentar, der auf alle Endpoints angewendet wird"
   },
   "shoo provides.filetransfer template": {
     "prefix": "shoo_prov_ftp",

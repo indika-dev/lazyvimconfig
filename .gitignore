@@ -6,10 +6,3 @@ debug
 foo.*
 *.log
 data
-session/
-nlsp-settings/jdtls.json
-lazy-lock.json
-mustache.vim
-lazyvim.json
-lua/plugins/dap.lua
-
