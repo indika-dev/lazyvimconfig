@@ -1,47 +1,4 @@
 local jdtls_utils = require("util.jdtlsUtils")
-local mason_registry = require("mason-registry")
-
-local deprecated_add_jars_to_bundles = function()
-  local jar_patterns = {
-    vim.fn.glob(mason_registry.get_package("vscode-java-decompiler"):get_install_path() .. "/server/dg.jdt*.jar"),
-    vim.fn.glob(
-      mason_registry.get_package("java-debug-adapter"):get_install_path()
-        .. "/extension/server/com.microsoft.java.debug.plugin-*.jar"
-    ),
-    vim.fn.glob(
-      mason_registry.get_package("java-test"):get_install_path()
-        .. "/extension/server/com.microsoft.java.test.plugin-*.jar"
-    ),
-    vim.fn.glob(
-      mason_registry.get_package("java-test"):get_install_path()
-        .. "/extension/server/com.microsoft.java.test.plugin-*.jar"
-    ),
-    vim.fn.glob(mason_registry.get_package("java-test"):get_install_path() .. "/extension/server/junit-*.jar"),
-    vim.fn.glob(
-      mason_registry.get_package("java-test"):get_install_path() .. "/extension/server/org.apiguardian.api_*.jar"
-    ),
-    vim.fn.glob(
-      mason_registry.get_package("java-test"):get_install_path()
-        .. "/extension/server/org.eclipse.jdt.junit4.runtime_*.jar"
-    ),
-    vim.fn.glob(
-      mason_registry.get_package("java-test"):get_install_path()
-        .. "/extension/server/org.eclipse.jdt.junit5.runtime_*.jar"
-    ),
-    vim.fn.glob(mason_registry.get_package("java-test"):get_install_path() .. "/extension/server/org.opentest4j_*.jar"),
-    vim.fn.glob(mason_registry.get_package("java-test"):get_install_path() .. "/extension/server/jacoco*.jar"),
-    vim.fn.glob(mason_registry.get_package("java-test"):get_install_path() .. "/extension/server/org.jacoco*.jar"),
-    vim.fn.glob(mason_registry.get_package("java-test"):get_install_path() .. "/extension/server/org.jacoco*.jar"),
-  }
-  local result = {}
-  for _, jar_pattern in ipairs(jar_patterns) do
-    for _, bundle in ipairs(vim.split(jar_pattern, "\n", {})) do
-      if bundle ~= {} then
-        table.insert(result, bundle)
-      end
-    end
-  end
-end
 
 return {
   {
@@ -87,6 +44,14 @@ return {
       local bundles = function()
         local result = {}
         add_jars_from_package("vscode-spring-boot-tools", "vscode-spring-boot-tools/jdtls/", result)
+        if #result == 0 then
+          local success, spring_boot = pcall(require, "spring_boot")
+          if success then
+            for _, v in pairs(spring_boot.java_extensions()) do
+              table.insert(result, v)
+            end
+          end
+        end
         add_jars_from_package("vscode-java-decompiler", "vscode-java-decompiler/bundles/", result)
         add_jars_from_package("java-debug-adapter", "java-debug-adapter/", result)
         add_jars_from_package("java-test", "java-test/", result)
