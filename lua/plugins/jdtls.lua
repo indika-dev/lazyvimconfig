@@ -49,16 +49,19 @@ return {
     ft = "<never>",
     opts = function()
       local add_jars_from_package = function(package_name, key_prefix, list)
-        local mason_package = mason_registry.get_package(package_name)
-        if mason_package:is_installed() then
-          local install_path = mason_package:get_install_path()
-          mason_package:get_receipt():if_present(function(recipe)
-            for key, value in pairs(recipe.links.share) do
-              if key:sub(1, #key_prefix) == key_prefix then
-                table.insert(list, install_path .. "/" .. value)
+        local success, mason_registry = pcall(require, "mason-registry")
+        if success then
+          local mason_package = mason_registry.get_package(package_name)
+          if mason_package:is_installed() then
+            local install_path = mason_package:get_install_path()
+            mason_package:get_receipt():if_present(function(recipe)
+              for key, value in pairs(recipe.links.share) do
+                if key:sub(1, #key_prefix) == key_prefix then
+                  table.insert(list, install_path .. "/" .. value)
+                end
               end
-            end
-          end)
+            end)
+          end
         end
       end
       local initial_runtimes = function()
