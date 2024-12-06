@@ -1,0 +1,13 @@
+{
+	"name": "shoo-snippets",
+	"contributes": {
+		"snippets": [
+			{
+				"language": [
+					"toml"
+				],
+				"path": "shoo.json"
+			}
+		]
+	}
+}
