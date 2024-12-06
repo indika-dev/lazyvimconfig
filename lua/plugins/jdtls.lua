@@ -21,6 +21,25 @@ return {
           end
         end
       end
+      local get_jar_or_dir_from_package = function(package_name, key_name)
+        local success, mason_registry = pcall(require, "mason-registry")
+        local result = nil
+        if success then
+          local mason_package = mason_registry.get_package(package_name)
+          if mason_package:is_installed() then
+            local install_path = mason_package:get_install_path()
+            mason_package:get_receipt():if_present(function(recipe)
+              for key, value in pairs(recipe.links.share) do
+                if key:sub(1, #key_name) == key_name then
+                  result = install_path .. "/" .. value
+                  break
+                end
+              end
+            end)
+          end
+        end
+        return result
+      end
       local initial_runtimes = function()
         return {
           {
@@ -147,21 +166,6 @@ return {
         project_name = function(root_dir)
           return root_dir and vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t") -- vim.fs.basename(root_dir)
         end,
-        config_os = function()
-          if vim.fn.has("mac") == 1 then
-            return "mac"
-          elseif vim.fn.has("unix") == 1 then
-            return "linux"
-          elseif vim.fn.has("win32") == 1 then
-            return "win"
-          else
-            vim.notify("Unsupported system", vim.log.levels.ERROR)
-            return
-          end
-        end,
-        launcher_path = function(jdtls_install_path)
-          return vim.fn.glob(jdtls_install_path .. "/plugins/org.eclipse.equinox.launcher_*.jar")
-        end,
         jdtls_jvm_home = function()
           return vim.env.HOME .. "/.local/lib/semeru-17"
         end,
@@ -172,9 +176,6 @@ return {
         jdtls_workspace_dir = function(project_name)
           return vim.fn.stdpath("cache") .. "/jdtls/" .. project_name .. "/workspace"
         end,
-        jdtls_install_path = function()
-          return require("mason-registry").get_package("jdtls"):get_install_path()
-        end,
         jdtls = config,
         cmd = { "jdtls" },
         full_cmd = function(opts)
@@ -182,7 +183,6 @@ return {
           local root_dir = opts.root_dir(fname)
           local project_name = opts.project_name(root_dir)
           local cmd = {}
-          local jdtls_install_path = opts.jdtls_install_path()
           if project_name then
             cmd = {
               opts.jdtls_jvm_home() .. "/bin/java",
@@ -198,7 +198,7 @@ return {
               "-Dosgi.bundles.defaultStartLevel=4",
               "-Declipse.product=org.eclipse.jdt.ls.core.product",
               "-Dosgi.checkConfiguration=true",
-              "-Dosgi.sharedConfiguration.area=" .. jdtls_install_path .. "/config_" .. opts.config_os(),
+              "-Dosgi.sharedConfiguration.area=" .. get_jar_or_dir_from_package("jdtls", "jdtls/config/"),
               "-Dosgi.sharedConfiguration.area.readOnly=true",
               "-Dosgi.configuration.cascaded=true",
               "-Dsun.zip.disableMemoryMapping=true",
@@ -208,9 +208,9 @@ return {
               "-Xmx1G",
               "-Xms100m",
               "-Xlog:disable",
-              "-javaagent:" .. jdtls_install_path .. "/lombok.jar",
+              "-javaagent:" .. get_jar_or_dir_from_package("jdtls", "jdtls/lombok.jar"),
               "-jar",
-              opts.launcher_path(jdtls_install_path),
+              get_jar_or_dir_from_package("jdtls", "jdtls/plugins/org.eclipse.equinox.launcher.jar"),
               "-data",
               opts.jdtls_workspace_dir(project_name),
               "-configuration",
