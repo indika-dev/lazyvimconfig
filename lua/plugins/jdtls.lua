@@ -3,10 +3,11 @@ local jdtls_utils = require("util.jdtlsUtils")
 return {
   {
     "mfussenegger/nvim-jdtls",
-    ft = "<never>",
+    ft = "java",
     opts = function()
-      local add_jars_from_package = function(package_name, key_prefix, list)
+      local get_shared_links_from_mason_receipt = function(package_name, key_prefix)
         local success, mason_registry = pcall(require, "mason-registry")
+        local result = {}
         if success then
           local mason_package = mason_registry.get_package(package_name)
           if mason_package:is_installed() then
@@ -14,31 +15,18 @@ return {
             mason_package:get_receipt():if_present(function(recipe)
               for key, value in pairs(recipe.links.share) do
                 if key:sub(1, #key_prefix) == key_prefix then
-                  table.insert(list, install_path .. "/" .. value)
-                end
-              end
-            end)
-          end
-        end
-      end
-      local get_jar_or_dir_from_package = function(package_name, key_name)
-        local success, mason_registry = pcall(require, "mason-registry")
-        local result = nil
-        if success then
-          local mason_package = mason_registry.get_package(package_name)
-          if mason_package:is_installed() then
-            local install_path = mason_package:get_install_path()
-            mason_package:get_receipt():if_present(function(recipe)
-              for key, value in pairs(recipe.links.share) do
-                if key:sub(1, #key_name) == key_name then
-                  result = install_path .. "/" .. value
-                  break
+                  table.insert(result, install_path .. "/" .. value)
                 end
               end
             end)
           end
         end
         return result
+      end
+      local addAll = function(target, insertion)
+        for _, value in pairs(insertion) do
+          table.insert(target, value)
+        end
       end
       local initial_runtimes = function()
         return {
@@ -62,18 +50,16 @@ return {
       end
       local bundles = function()
         local result = {}
-        add_jars_from_package("vscode-spring-boot-tools", "vscode-spring-boot-tools/jdtls/", result)
-        if #result == 0 then
-          local success, spring_boot = pcall(require, "spring_boot")
-          if success then
-            for _, v in pairs(spring_boot.java_extensions()) do
-              table.insert(result, v)
-            end
-          end
+        -- get_shared_links_from_mason_receipt("vscode-spring-boot-tools", "vscode-spring-boot-tools/jdtls/", result)
+        -- if #result == 0 then
+        local success, spring_boot = pcall(require, "spring_boot")
+        if success then
+          addAll(result, spring_boot.java_extensions())
         end
-        add_jars_from_package("vscode-java-decompiler", "vscode-java-decompiler/bundles/", result)
-        add_jars_from_package("java-debug-adapter", "java-debug-adapter/", result)
-        add_jars_from_package("java-test", "java-test/", result)
+        -- end
+        addAll(result, get_shared_links_from_mason_receipt("vscode-java-decompiler", "vscode-java-decompiler/bundles/"))
+        addAll(result, get_shared_links_from_mason_receipt("java-debug-adapter", "java-debug-adapter/"))
+        addAll(result, get_shared_links_from_mason_receipt("java-test", "java-test/"))
         return result
       end
       local jdtls_settings = function()
@@ -198,7 +184,7 @@ return {
               "-Dosgi.bundles.defaultStartLevel=4",
               "-Declipse.product=org.eclipse.jdt.ls.core.product",
               "-Dosgi.checkConfiguration=true",
-              "-Dosgi.sharedConfiguration.area=" .. get_jar_or_dir_from_package("jdtls", "jdtls/config/"),
+              "-Dosgi.sharedConfiguration.area=" .. get_shared_links_from_mason_receipt("jdtls", "jdtls/config/")[1],
               "-Dosgi.sharedConfiguration.area.readOnly=true",
               "-Dosgi.configuration.cascaded=true",
               "-Dsun.zip.disableMemoryMapping=true",
@@ -208,9 +194,9 @@ return {
               "-Xmx1G",
               "-Xms100m",
               "-Xlog:disable",
-              "-javaagent:" .. get_jar_or_dir_from_package("jdtls", "jdtls/lombok.jar"),
+              "-javaagent:" .. get_shared_links_from_mason_receipt("jdtls", "jdtls/lombok.jar")[1],
               "-jar",
-              get_jar_or_dir_from_package("jdtls", "jdtls/plugins/org.eclipse.equinox.launcher.jar"),
+              get_shared_links_from_mason_receipt("jdtls", "jdtls/plugins/org.eclipse.equinox.launcher.jar")[1],
               "-data",
               opts.jdtls_workspace_dir(project_name),
               "-configuration",
