@@ -5,11 +5,22 @@ return {
     "mfussenegger/nvim-jdtls",
     ft = "java",
     opts = function()
+      require("mason").setup()
+      local success, mason_registry = pcall(require, "mason-registry")
+      if success then
+        vim.notify("refreshing mason registry", vim.log.levels.INFO)
+        mason_registry.refresh()
+      end
       local get_shared_links_from_mason_receipt = function(package_name, key_prefix)
-        local success, mason_registry = pcall(require, "mason-registry")
+        if success == false then
+          success, mason_registry = pcall(require, "mason-registry")
+        end
         local result = {}
         if success then
           local mason_package = mason_registry.get_package(package_name)
+          if mason_package == nil then
+            return result
+          end
           if mason_package:is_installed() then
             local install_path = mason_package:get_install_path()
             mason_package:get_receipt():if_present(function(recipe)
