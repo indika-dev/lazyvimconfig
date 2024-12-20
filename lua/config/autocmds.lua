@@ -51,7 +51,7 @@ if vim.g.neovide then
   -- Dieser Autocommand schaltet die relative Nummerierung aus, wenn wir mit dem Scrollen beginnen
   vim.api.nvim_create_autocmd({ "WinScrolled" }, {
     callback = function(ev)
-      if vim.o.relativenumber then
+      if vim.g.neovide and vim.o.relativenumber then
         vim.cmd("set relativenumber norelativenumber")
         vim.g.neovide_winscrolled = true
       end
