@@ -2,7 +2,7 @@ return {
   {
     -- "JavaHello/spring-boot.nvim",
     dir = "~/workspace/spring-boot.nvim",
-    ft = "jproperties",
+    ft = { "jproperties" },
     opts = function()
       require("mason").setup()
       local success, mason_registry = pcall(require, "mason-registry")

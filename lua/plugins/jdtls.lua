@@ -3,7 +3,7 @@ local jdtls_utils = require("util.jdtlsUtils")
 return {
   {
     "mfussenegger/nvim-jdtls",
-    ft = "java",
+    ft = { "java" },
     opts = function()
       require("mason").setup()
       local success, mason_registry = pcall(require, "mason-registry")
