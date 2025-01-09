@@ -8,7 +8,6 @@ return {
       require("mason").setup()
       local success, mason_registry = pcall(require, "mason-registry")
       if success then
-        vim.notify("refreshing mason registry", vim.log.levels.INFO)
         mason_registry.refresh()
       end
       local get_shared_links_from_mason_receipt = function(package_name, key_prefix)
