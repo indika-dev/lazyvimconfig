@@ -19,11 +19,9 @@ return {
         "yq",
       })
       opts.registries = {
-        "file:~/workspace/mason-registry",
-        -- "github:mason-org/mason-registry",
+        "github:indika-dev/personal-mason-registry",
+        "github:mason-org/mason-registry",
       }
-      --   -- "github:nvim-java/mason-registry",
-      --   -- "github:mason-org/mason-registry",
     end,
   },
 }
