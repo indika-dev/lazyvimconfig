@@ -5,7 +5,6 @@ return {
     "mfussenegger/nvim-jdtls",
     ft = { "java" },
     opts = function()
-      require("mason").setup()
       local success, mason_registry = pcall(require, "mason-registry")
       if success then
         mason_registry.refresh()
@@ -60,13 +59,10 @@ return {
       end
       local bundles = function()
         local result = {}
-        -- get_shared_links_from_mason_receipt("vscode-spring-boot-tools", "vscode-spring-boot-tools/jdtls/", result)
-        -- if #result == 0 then
         local success, spring_boot = pcall(require, "spring_boot")
         if success then
           addAll(result, spring_boot.java_extensions())
         end
-        -- end
         addAll(result, get_shared_links_from_mason_receipt("vscode-java-decompiler", "vscode-java-decompiler/bundles/"))
         addAll(result, get_shared_links_from_mason_receipt("java-debug-adapter", "java-debug-adapter/"))
         addAll(result, get_shared_links_from_mason_receipt("java-test", "java-test/"))
@@ -221,14 +217,5 @@ return {
         test = { config_overrides = {} },
       }
     end,
-    -- config = function(_, opts)
-    --   require("lspconfig").jdtls.setup(opts)
-    --   local status_sts, spring_boot = pcall(require, "spring_boot")
-    --   if status_sts then
-    --     spring_boot.init_lsp_commands()
-    --   else
-    --     vim.notify("SpringBoot Tools couldn't be started", vim.log.levels.ERROR)
-    --   end
-    -- end,
   },
 }
