@@ -59,8 +59,8 @@ return {
       end
       local bundles = function()
         local result = {}
-        local success, spring_boot = pcall(require, "spring_boot")
-        if success then
+        local sb_success, spring_boot = pcall(require, "spring_boot")
+        if sb_success then
           addAll(result, spring_boot.java_extensions())
         end
         addAll(result, get_shared_links_from_mason_receipt("vscode-java-decompiler", "vscode-java-decompiler/bundles/"))
