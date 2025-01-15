@@ -9,8 +9,5 @@ return {
       append_default_schemas = true,
       loader = "json",
     },
-    config = function(_, opts)
-      require("nlspsettings").setup(opts)
-    end,
   },
 }
