@@ -15,19 +15,21 @@ return {
         end
         local result = {}
         if success then
-          local mason_package = mason_registry.get_package(package_name)
-          if mason_package == nil then
-            return result
-          end
-          if mason_package:is_installed() then
-            local install_path = mason_package:get_install_path()
-            mason_package:get_receipt():if_present(function(recipe)
-              for key, value in pairs(recipe.links.share) do
-                if key:sub(1, #key_prefix) == key_prefix then
-                  table.insert(result, install_path .. "/" .. value)
+          if mason_registry.has_package(package_name) then
+            local mason_package = mason_registry.get_package(package_name)
+            if mason_package == nil then
+              return result
+            end
+            if mason_package:is_installed() then
+              local install_path = mason_package:get_install_path()
+              mason_package:get_receipt():if_present(function(recipe)
+                for key, value in pairs(recipe.links.share) do
+                  if key:sub(1, #key_prefix) == key_prefix then
+                    table.insert(result, install_path .. "/" .. value)
+                  end
                 end
-              end
-            end)
+              end)
+            end
           end
         end
         return result
