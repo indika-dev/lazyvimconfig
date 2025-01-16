@@ -32,7 +32,7 @@ scheduler.scheduleColorSchemeChange = function(futureTimestamp)
     scheduler.timer:stop()
     scheduler.timer:close()
     vim.schedule_wrap(function()
-      local _colorscheme = "colorscheme " .. colorscheme()
+      local _colorscheme = { cmd = "colorscheme", args = { colorscheme() } }
       vim.cmd(_colorscheme)
     end)
   end)
