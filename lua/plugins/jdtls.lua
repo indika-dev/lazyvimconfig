@@ -161,7 +161,7 @@ return {
           return root_dir and vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t") -- vim.fs.basename(root_dir)
         end,
         jdtls_jvm_home = function()
-          return vim.env.HOME .. "/.local/lib/semeru-17"
+          return vim.env.HOME .. "/.local/lib/semeru-jdtls"
         end,
         -- Where are the config and workspace dirs for a project?
         jdtls_config_dir = function(project_name)
