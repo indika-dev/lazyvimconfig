@@ -13,7 +13,7 @@ return {
         require("fzf-lua").lsp_live_workspace_symbols()
       end, { nargs = 0 })
       return {
-        java_cmd = vim.env.HOME .. "/.local/lib/semeru-17/bin/java",
+        java_cmd = vim.env.HOME .. "/.local/lib/semeru-jdtls/bin/java",
       }
     end,
   },
