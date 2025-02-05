@@ -17,6 +17,7 @@ return {
         "djlint",
         "jdtls",
         "yq",
+        "vscode-spring-boot-tools",
       })
       opts.registries = {
         "github:indika-dev/personal-mason-registry",
