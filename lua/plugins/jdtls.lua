@@ -15,11 +15,8 @@ return {
         end
         local result = {}
         if success then
-          if mason_registry.has_package(package_name) then
-            local mason_package = mason_registry.get_package(package_name)
-            if mason_package == nil then
-              return result
-            end
+          local has_package, mason_package = pcall(mason_registry.get_package, package_name)
+          if has_package then
             if mason_package:is_installed() then
               local install_path = mason_package:get_install_path()
               mason_package:get_receipt():if_present(function(recipe)
