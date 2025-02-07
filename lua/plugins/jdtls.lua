@@ -130,6 +130,11 @@ return {
         on_attach = function()
           local _, _ = pcall(vim.lsp.codelens.refresh)
         end,
+        handlers = {
+          ["$/progress"] = function(_, result, ctx)
+            -- disable progress updates.
+          end,
+        },
       }
 
       return {

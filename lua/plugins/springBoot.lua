@@ -9,7 +9,6 @@ return {
         mason_registry.refresh()
       end
       vim.api.nvim_create_user_command("SpringBootSymbols", function(_)
-        -- vim.cmd({ cmd = "FzfLua", args = { "lsp_live_workspace_symbols" } })
         require("fzf-lua").lsp_live_workspace_symbols()
       end, { nargs = 0 })
       return {

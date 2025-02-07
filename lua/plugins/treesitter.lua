@@ -1,16 +1,4 @@
--- Plugins: Tree-sitter and Syntax
--- https://github.com/rafi/vim-config
-
 return {
-
-  -----------------------------------------------------------------------------
-  -- Vimscript syntax/indent plugins
-  { "chrisbra/csv.vim", ft = "csv" },
-  { "lifepillar/pgsql.vim", ft = "pgsql" },
-  { "MTDL9/vim-log-highlighting", ft = "log" },
-
-  -----------------------------------------------------------------------------
-  -- Nvim Treesitter configurations and abstraction layer
   {
     "nvim-treesitter/nvim-treesitter",
     opts = {
@@ -19,6 +7,7 @@ return {
         "comment",
         "css",
         "cue",
+        "csv",
         "dap_repl",
         "diff",
         "fish",
