@@ -69,6 +69,15 @@ if vim.g.neovide then
   })
 end
 
+vim.api.nvim_create_user_command("LazyPodman", function()
+  if vim.fn.has("nvim-0.5") == 0 then
+    print("LazyPodman needs Neovim >= 0.5")
+    return
+  end
+
+  require("util.lazypodman").toggle()
+end, {})
+
 -- vim.api.nvim_create_autocmd("ColorScheme", {
 --   pattern = "kanagawa",
 --   callback = function()

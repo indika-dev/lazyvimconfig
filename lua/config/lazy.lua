@@ -34,19 +34,11 @@ vim.filetype.add({
 vim.treesitter.language.register("glimmer", "mustache") -- the someft filetype will use the python parser and queries.
 vim.treesitter.language.register("glimmer", "handlebars") -- the someft filetype will use the python parser and queries.
 
-vim.api.nvim_create_user_command("LazyPodman", function()
-  if vim.fn.has("nvim-0.5") == 0 then
-    print("LazyPodman needs Neovim >= 0.5")
-    return
-  end
-
-  require("util.lazypodman").toggle()
-end, {})
-
 require("lazy").setup({
   spec = {
     -- add LazyVim and import its plugins
     { "LazyVim/LazyVim", import = "lazyvim.plugins" },
+    { import = "lazyvim.plugins.extras.lang.fsharp" },
     -- import/override with your plugins
     { import = "plugins" },
   },
