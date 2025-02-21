@@ -17,7 +17,7 @@ vim.opt.rtp:prepend(lazypath)
 if "stefan" == vim.env.USER then
   vim.opt.rtp:append("/usr/bin/")
 else
-  vim.opt.rtp:append("/home/linuxbrew/.linuxbrew/bin/")
+  vim.opt.rtp:append("/opt/linuxbrew/bin/")
 end
 vim.filetype.add({
   extension = {
@@ -38,7 +38,7 @@ require("lazy").setup({
   spec = {
     -- add LazyVim and import its plugins
     { "LazyVim/LazyVim", import = "lazyvim.plugins" },
-    { import = "lazyvim.plugins.extras.lang.fsharp" },
+    -- { import = "lazyvim.plugins.extras.lang.fsharp" },
     -- import/override with your plugins
     { import = "plugins" },
   },
