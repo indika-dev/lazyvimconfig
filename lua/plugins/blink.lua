@@ -11,10 +11,20 @@ return {
             auto_insert = false,
           },
         },
+        documentation = {
+          auto_show = true,
+          auto_show_delay_ms = 500,
+        },
+        menu = {
+          auto_show = true,
+        },
+        ghost_text = {
+          enabled = false,
+        },
       },
 
       -- experimental signature help support
-      -- signature = { enabled = true },
+      signature = { enabled = true },
     },
   },
 }
