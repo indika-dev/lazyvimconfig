@@ -53,7 +53,7 @@ return {
       local initial_format_settings = function()
         return {
           profile = "GoogleStyle",
-          url = vim.env.HOME .. "/.local/lib/java-google-formatter.xml",
+          url = vim.env.HOME .. "/.local/lib/eclipse-java-google-style.xml",
         }
       end
       local bundles = function()
@@ -67,46 +67,44 @@ return {
         addAll(result, get_shared_links_from_mason_receipt("java-test", "java-test/"))
         return result
       end
+      local standard_settings = function()
+        return {
+          java = {
+            configuration = {
+              runtimes = initial_runtimes(),
+            },
+            format = {
+              comments = { enabled = true },
+              enabled = true,
+              onType = { enabled = true },
+              settings = initial_format_settings(),
+            },
+          },
+        }
+      end
       local jdtls_settings = function()
         local settings = {}
         local status_nlsp, nlsp = pcall(require, "nlspsettings")
         if status_nlsp then
-          settings = nlsp.get_settings(vim.fn.stdpath("config"), "jdtls")
+          settings = nlsp.get_settings(vim.fn.stdpath("config") .. "/nlsp-settings", "jdtls")
+          if next(settings) == nil then
+            vim.notify("No settings found for jdtls in nlsp-settings", vim.log.levels.WARN)
+            settings = standard_settings()
+          end
         else
-          settings = {
-            java = {
-              configuration = {
-                runtimes = initial_runtimes(),
-              },
-              format = {
-                comments = { enabled = true },
-                enabled = true,
-                onType = { enabled = true },
-                settings = initial_format_settings(),
-              },
-            },
-          }
+          settings = standard_settings()
         end
-        if settings.java.configuration.runtimes == nil or settings.java.configuration.runtimes == {} then
+        if next(settings.java.configuration.runtimes) == nil then
           settings.java.configuration.runtimes = initial_runtimes()
         end
-        if settings.java.format.settings == nil or settings.java.format.settings == {} then
+        if next(settings.java.format.settings) == nil then
           settings.java.format.settings = initial_format_settings()
         end
         return settings
       end
-      local extendedClientCapabilities = function()
-        local status_jdtls, jdtls = pcall(require, "jdtls")
-        local std_extended_capbilities = {
-          resolveAdditionalTextEditsSupport = true,
-        }
-        if not status_jdtls then
-          return std_extended_capbilities
-        end
-        return vim.tbl_deep_extend("keep", std_extended_capbilities, jdtls.extendedClientCapabilities)
-      end
-      local config = {
-        capabilities = {
+      local capabilities = function()
+        local status_blink, blink_cmp = pcall(require, "blink.cmp")
+        local result = {
           workspace = {
             configuration = true,
           },
@@ -117,7 +115,25 @@ return {
               },
             },
           },
-        },
+        }
+        if status_blink then
+          result = vim.tbl_deep_extend("keep", result, blink_cmp.get_lsp_capabilities())
+        end
+        return result
+      end
+      local extendedClientCapabilities = function()
+        local status_jdtls, jdtls = pcall(require, "jdtls")
+        local std_extended_capbilities = {
+          resolveAdditionalTextEditsSupport = true,
+          progressReportProvider = false,
+        }
+        if not status_jdtls then
+          return std_extended_capbilities
+        end
+        return vim.tbl_deep_extend("keep", std_extended_capbilities, jdtls.extendedClientCapabilities)
+      end
+      local config = {
+        capabilities = capabilities(),
         flags = {
           allow_incremental_sync = true,
           server_side_fuzzy_completion = true,
@@ -131,9 +147,7 @@ return {
           local _, _ = pcall(vim.lsp.codelens.refresh)
         end,
         handlers = {
-          ["$/progress"] = function(_, result, ctx)
-            -- disable progress updates.
-          end,
+          ["$/progress"] = function() end,
         },
       }
 
@@ -163,7 +177,7 @@ return {
           return root_dir and vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t") -- vim.fs.basename(root_dir)
         end,
         jdtls_jvm_home = function()
-          return vim.env.HOME .. "/.local/lib/semeru-jdtls"
+          return vim.env.HOME .. "/.local/lib/jvm-jdtls"
         end,
         -- Where are the config and workspace dirs for a project?
         jdtls_config_dir = function(project_name)
