@@ -53,7 +53,18 @@ utils
 local utils = {}
 
 utils.is_lazydocker_available = function()
-  return vim.fn.executable(vim.fn.expand("$HOME") .. "/Applications/lazydocker") == 1
+  local install_dirs = {
+    vim.env.HOME .. "/.local/bin/lazydocker",
+    "/opt/homebrew/bin/lazydocker",
+    "/usr/local/bin/lazydocker",
+    vim.env.HOME .. "/.cargo/bin/lazydocker",
+  }
+  for _, v in pairs(install_dirs) do
+    if vim.fn.executable(v) == 1 then
+      return true
+    end
+  end
+  return false
 end
 
 utils.is_docker_available = function()
@@ -119,7 +130,7 @@ function View:close(opts)
 end
 
 function View:render()
-  vim.fn.termopen(vim.fn.expand("DOCKER_HOST=unix:///run/user/$UID/podman/podman.sock $HOME/Applications/lazydocker"), {
+  vim.fn.termopen(vim.fn.expand("$HOME/Applications/lazydocker"), {
     on_exit = function()
       self:close()
     end,
