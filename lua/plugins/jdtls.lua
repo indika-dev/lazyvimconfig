@@ -70,20 +70,16 @@ return {
       local standard_settings = function()
         return {
           java = {
-            configuration = {
-              runtimes = initial_runtimes(),
-            },
             format = {
               comments = { enabled = true },
               enabled = true,
               onType = { enabled = true },
-              settings = initial_format_settings(),
             },
           },
         }
       end
       local jdtls_settings = function()
-        local settings = {}
+        local settings = standard_settings()
         local status_nlsp, nlsp = pcall(require, "nlspsettings")
         if status_nlsp then
           settings = nlsp.get_settings(vim.fn.stdpath("config") .. "/nlsp-settings", "jdtls")
@@ -91,15 +87,9 @@ return {
             vim.notify("No settings found for jdtls in nlsp-settings", vim.log.levels.WARN)
             settings = standard_settings()
           end
-        else
-          settings = standard_settings()
         end
-        if next(settings.java.configuration.runtimes) == nil then
-          settings.java.configuration.runtimes = initial_runtimes()
-        end
-        if next(settings.java.format.settings) == nil then
-          settings.java.format.settings = initial_format_settings()
-        end
+        settings.java.configuration.runtimes = initial_runtimes()
+        settings.java.format.settings = initial_format_settings()
         return settings
       end
       local capabilities = function()
