@@ -88,6 +88,19 @@ return {
             settings = standard_settings()
           end
         end
+        if next(settings.java) == nil then
+          settings.java = {}
+        end
+        if next(settings.java.jdt) == nil then
+          settings.java.jdt = {}
+        end
+        if next(settings.java.jdt.ls) == nil then
+          settings.java.jdt.ls = {}
+        end
+        if settings.java.jdt.ls.vmargs == nil or settings.java.jdt.ls.vmargs == "" then
+          settings.java.jdt.ls.vmargs =
+            "-XX:+UseParallelGC -XX:+TieredCompilation -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx1G -Xms100m -Xlog:disable"
+        end
         settings.java.configuration.runtimes = initial_runtimes()
         settings.java.format.settings = initial_format_settings()
         return settings
@@ -117,10 +130,11 @@ return {
           resolveAdditionalTextEditsSupport = true,
           progressReportProvider = false,
         }
-        if not status_jdtls then
-          return std_extended_capbilities
+        if status_jdtls then
+          std_extended_capbilities =
+            vim.tbl_deep_extend("keep", std_extended_capbilities, jdtls.extendedClientCapabilities)
         end
-        return vim.tbl_deep_extend("keep", std_extended_capbilities, jdtls.extendedClientCapabilities)
+        return std_extended_capbilities
       end
       local config = {
         capabilities = capabilities(),
@@ -201,13 +215,6 @@ return {
               "-Dosgi.sharedConfiguration.area=" .. get_shared_links_from_mason_receipt("jdtls", "jdtls/config/")[1],
               "-Dosgi.sharedConfiguration.area.readOnly=true",
               "-Dosgi.configuration.cascaded=true",
-              "-Dsun.zip.disableMemoryMapping=true",
-              "-XX:+UseParallelGC",
-              "-XX:GCTimeRatio=4",
-              "-XX:AdaptiveSizePolicyWeight=90",
-              "-Xmx1G",
-              "-Xms100m",
-              "-Xlog:disable",
               "-javaagent:" .. get_shared_links_from_mason_receipt("jdtls", "jdtls/lombok.jar")[1],
               "-jar",
               get_shared_links_from_mason_receipt("jdtls", "jdtls/plugins/org.eclipse.equinox.launcher.jar")[1],
@@ -216,6 +223,18 @@ return {
               "-configuration",
               opts.jdtls_config_dir(project_name),
             }
+            -- merge vmargs from settings
+            local tmp_cmd = {}
+            for i = 1, 10 do
+              tmp_cmd[#tmp_cmd + 1] = cmd[i]
+            end
+            for value in opts.jdtls.settings.java.jdt.ls.vmargs:gmatch("%S+") do
+              tmp_cmd[#tmp_cmd + 1] = value
+            end
+            for i = 11, #cmd do
+              tmp_cmd[#tmp_cmd + 1] = cmd[i]
+            end
+            cmd = tmp_cmd
           end
           return cmd
         end,

@@ -93,7 +93,7 @@
   "java.jdt.ls.java.home": null,
   "java.jdt.ls.lombokSupport.enabled": true,
   "java.jdt.ls.protobufSupport.enabled": false,
-  "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx1G -Xms100m -Xlog:disable",
+  "java.jdt.ls.vmargs": "-XX:+TieredCompilation -XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx1G -Xms100m -Xlog:disable",
   "java.maven.downloadSources": false,
   "java.maven.updateSnapshots": false,
   "java.maxConcurrentBuilds": 1,
