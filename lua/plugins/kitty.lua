@@ -1,10 +1,14 @@
+local runs_in_kitty = os.getenv("$TERM") == "xterm-kitty"
+
 return {
   {
     "fladson/vim-kitty",
+    enabled = runs_in_kitty,
   },
   {
     "knubie/vim-kitty-navigator",
     build = "cp ./*.py ~/.config/kitty/",
+    enabled = runs_in_kitty,
   },
   -- {
   --   "MunsMan/kitty-navigator.nvim",
@@ -49,7 +53,7 @@ return {
   -- },
   {
     "mikesmithgh/kitty-scrollback.nvim",
-    enabled = true,
+    enabled = runs_in_kitty,
     lazy = true,
     cmd = {
       "KittyScrollbackGenerateKittens",
