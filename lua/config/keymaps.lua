@@ -32,27 +32,29 @@ if vim.g.neovide then
   vim.api.nvim_set_keymap("n", "<C-ScrollWheelDown>", "<cmd>:set guifont=-<CR>", { noremap = true, silent = true })
 end
 
-vim.api.nvim_set_keymap(
-  "n",
-  "<C-h>",
-  "<cmd>KittyNavigateLeft<CR>",
-  { desc = "Kitty Navigate Left", noremap = true, silent = true }
-)
-vim.api.nvim_set_keymap(
-  "n",
-  "<C-j>",
-  "<cmd>KittyNavigateDown<CR>",
-  { desc = "Kitty Navigate Down", noremap = true, silent = true }
-)
-vim.api.nvim_set_keymap(
-  "n",
-  "<C-k>",
-  "<cmd>KittyNavigateUp<CR>",
-  { desc = "Kitty Navigate Up", noremap = true, silent = true }
-)
-vim.api.nvim_set_keymap(
-  "n",
-  "<C-l>",
-  "<cmd>KittyNavigateRight<CR>",
-  { desc = "Kitty Navigate Right", noremap = true, silent = true }
-)
+if os.getenv("$TERM") == "xterm-kitty" then
+  vim.api.nvim_set_keymap(
+    "n",
+    "<C-h>",
+    "<cmd>KittyNavigateLeft<CR>",
+    { desc = "Kitty Navigate Left", noremap = true, silent = true }
+  )
+  vim.api.nvim_set_keymap(
+    "n",
+    "<C-j>",
+    "<cmd>KittyNavigateDown<CR>",
+    { desc = "Kitty Navigate Down", noremap = true, silent = true }
+  )
+  vim.api.nvim_set_keymap(
+    "n",
+    "<C-k>",
+    "<cmd>KittyNavigateUp<CR>",
+    { desc = "Kitty Navigate Up", noremap = true, silent = true }
+  )
+  vim.api.nvim_set_keymap(
+    "n",
+    "<C-l>",
+    "<cmd>KittyNavigateRight<CR>",
+    { desc = "Kitty Navigate Right", noremap = true, silent = true }
+  )
+end
