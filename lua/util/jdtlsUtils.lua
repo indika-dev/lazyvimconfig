@@ -1,3 +1,5 @@
+local SCANDIR = require("util.scandir")
+
 -- originally taken from lspconfig
 local JdtlsUtils = {}
 
@@ -107,6 +109,49 @@ JdtlsUtils.root_pattern = function(...)
   return function(startpath)
     startpath = JdtlsUtils.strip_archive_subpath(startpath)
     return JdtlsUtils.search_ancestors(startpath, matcher)
+  end
+end
+
+local file_exists = function(name)
+  local f = io.open(name, "r")
+  return f ~= nil and io.close(f)
+end
+
+JdtlsUtils.get_shared_links_from_mason_receipt = function(package_name, key_prefix)
+  local success, mason_registry = pcall(require, "mason-registry")
+  local result = {}
+  if success then
+    local has_package, mason_package = pcall(mason_registry.get_package, package_name)
+    if has_package then
+      if mason_package:is_installed() then
+        local install_path = mason_package:get_install_path()
+        mason_package:get_receipt():if_present(function(recipe)
+          local version_mismatch = false
+          for key, value in pairs(recipe.links.share) do
+            if key:sub(1, #key_prefix) == key_prefix then
+              if not file_exists(install_path .. "/" .. value) then
+                version_mismatch = true
+              end
+              table.insert(result, install_path .. "/" .. value)
+            end
+          end
+          if version_mismatch then
+            result = {}
+            vim.notify(package_name .. " will be loaded without mason", vim.log.levels.WARN)
+            for _, fname in ipairs(SCANDIR.scandir(install_path, true, "jar")) do
+              table.insert(result, fname)
+            end
+          end
+        end)
+      end
+    end
+  end
+  return result
+end
+
+JdtlsUtils.addAll = function(target, insertion)
+  for _, value in pairs(insertion) do
+    table.insert(target, value)
   end
 end
 

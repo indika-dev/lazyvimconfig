@@ -9,33 +9,6 @@ return {
       if success then
         mason_registry.refresh()
       end
-      local get_shared_links_from_mason_receipt = function(package_name, key_prefix)
-        if success == false then
-          success, mason_registry = pcall(require, "mason-registry")
-        end
-        local result = {}
-        if success then
-          local has_package, mason_package = pcall(mason_registry.get_package, package_name)
-          if has_package then
-            if mason_package:is_installed() then
-              local install_path = mason_package:get_install_path()
-              mason_package:get_receipt():if_present(function(recipe)
-                for key, value in pairs(recipe.links.share) do
-                  if key:sub(1, #key_prefix) == key_prefix then
-                    table.insert(result, install_path .. "/" .. value)
-                  end
-                end
-              end)
-            end
-          end
-        end
-        return result
-      end
-      local addAll = function(target, insertion)
-        for _, value in pairs(insertion) do
-          table.insert(target, value)
-        end
-      end
       local initial_runtimes = function()
         return {
           {
@@ -60,11 +33,13 @@ return {
         local result = {}
         local sb_success, spring_boot = pcall(require, "spring_boot")
         if sb_success then
-          addAll(result, spring_boot.java_extensions())
+          jdtls_utils.addAll(result, spring_boot.java_extensions())
         end
-        addAll(result, get_shared_links_from_mason_receipt("vscode-java-decompiler", "vscode-java-decompiler/bundles/"))
-        addAll(result, get_shared_links_from_mason_receipt("java-debug-adapter", "java-debug-adapter/"))
-        addAll(result, get_shared_links_from_mason_receipt("java-test", "java-test/"))
+        jdtls_utils.addAll(
+          result,
+          jdtls_utils.get_shared_links_from_mason_receipt("vscode-java-decompiler", "vscode-java-decompiler/bundles/")
+        )
+        jdtls_utils.addAll(result, jdtls_utils.get_shared_links_from_mason_receipt("java-test", "java-test/"))
         return result
       end
       local standard_settings = function()
@@ -119,6 +94,7 @@ return {
             },
           },
         }
+        -- result = vim.tbl_deep_extend("keep", result, vim.lsp.protocol.make_client_capabilities())
         if status_blink then
           result = vim.tbl_deep_extend("keep", result, blink_cmp.get_lsp_capabilities())
         end
@@ -212,12 +188,16 @@ return {
               "-Dosgi.bundles.defaultStartLevel=4",
               "-Declipse.product=org.eclipse.jdt.ls.core.product",
               "-Dosgi.checkConfiguration=true",
-              "-Dosgi.sharedConfiguration.area=" .. get_shared_links_from_mason_receipt("jdtls", "jdtls/config/")[1],
+              "-Dosgi.sharedConfiguration.area="
+                .. jdtls_utils.get_shared_links_from_mason_receipt("jdtls", "jdtls/config/")[1],
               "-Dosgi.sharedConfiguration.area.readOnly=true",
               "-Dosgi.configuration.cascaded=true",
-              "-javaagent:" .. get_shared_links_from_mason_receipt("jdtls", "jdtls/lombok.jar")[1],
+              "-javaagent:" .. jdtls_utils.get_shared_links_from_mason_receipt("jdtls", "jdtls/lombok.jar")[1],
               "-jar",
-              get_shared_links_from_mason_receipt("jdtls", "jdtls/plugins/org.eclipse.equinox.launcher.jar")[1],
+              jdtls_utils.get_shared_links_from_mason_receipt(
+                "jdtls",
+                "jdtls/plugins/org.eclipse.equinox.launcher.jar"
+              )[1],
               "-data",
               opts.jdtls_workspace_dir(project_name),
               "-configuration",
