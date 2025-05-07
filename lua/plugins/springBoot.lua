@@ -1,6 +1,8 @@
 return {
   {
     "JavaHello/spring-boot.nvim",
+    dir = "/Users/maassens/workspace/spring-boot.nvim",
+    dev = { true },
     ft = { "jproperties", "java" },
     opts = function()
       require("mason").setup()

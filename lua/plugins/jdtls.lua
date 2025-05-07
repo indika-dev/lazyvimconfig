@@ -35,11 +35,8 @@ return {
         if sb_success then
           jdtls_utils.addAll(result, spring_boot.java_extensions())
         end
-        jdtls_utils.addAll(
-          result,
-          jdtls_utils.get_shared_links_from_mason_receipt("vscode-java-decompiler", "vscode-java-decompiler/bundles/")
-        )
-        jdtls_utils.addAll(result, jdtls_utils.get_shared_links_from_mason_receipt("java-test", "java-test/"))
+        jdtls_utils.addAll(result, jdtls_utils.get_from_mason_registry("vscode-java-decompiler", "bundles/*.jar"))
+        jdtls_utils.addAll(result, jdtls_utils.get_from_mason_registry("java-test", "*.jar"))
         return result
       end
       local standard_settings = function()
@@ -188,16 +185,12 @@ return {
               "-Dosgi.bundles.defaultStartLevel=4",
               "-Declipse.product=org.eclipse.jdt.ls.core.product",
               "-Dosgi.checkConfiguration=true",
-              "-Dosgi.sharedConfiguration.area="
-                .. jdtls_utils.get_shared_links_from_mason_receipt("jdtls", "jdtls/config/")[1],
+              "-Dosgi.sharedConfiguration.area=" .. jdtls_utils.get_from_mason_registry("jdtls", "config/*.ini")[1],
               "-Dosgi.sharedConfiguration.area.readOnly=true",
               "-Dosgi.configuration.cascaded=true",
-              "-javaagent:" .. jdtls_utils.get_shared_links_from_mason_receipt("jdtls", "jdtls/lombok.jar")[1],
+              "-javaagent:" .. jdtls_utils.get_from_mason_registry("jdtls", "lombok.jar")[1],
               "-jar",
-              jdtls_utils.get_shared_links_from_mason_receipt(
-                "jdtls",
-                "jdtls/plugins/org.eclipse.equinox.launcher.jar"
-              )[1],
+              jdtls_utils.get_from_mason_registry("jdtls", "plugins/org.eclipse.equinox.launcher.jar")[1],
               "-data",
               opts.jdtls_workspace_dir(project_name),
               "-configuration",

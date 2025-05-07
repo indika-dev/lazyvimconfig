@@ -117,33 +117,16 @@ local file_exists = function(name)
   return f ~= nil and io.close(f)
 end
 
-JdtlsUtils.get_shared_links_from_mason_receipt = function(package_name, key_prefix, extensions)
+JdtlsUtils.get_from_mason_registry = function(package_name, filter)
   local success, mason_registry = pcall(require, "mason-registry")
-  local used_extensions = extensions or "jar"
   local result = {}
   if success then
     local has_package, mason_package = pcall(mason_registry.get_package, package_name)
     if has_package then
       if mason_package:is_installed() then
-        local install_path = mason_package:get_install_path()
-        mason_package:get_receipt():if_present(function(recipe)
-          local version_mismatch = false
-          for key, value in pairs(recipe.links.share) do
-            if key:sub(1, #key_prefix) == key_prefix then
-              if not file_exists(install_path .. "/" .. value) then
-                version_mismatch = true
-              end
-              table.insert(result, install_path .. "/" .. value)
-            end
-          end
-          if version_mismatch then
-            result = {}
-            vim.notify(package_name .. " will be loaded without mason", vim.log.levels.WARN)
-            for _, fname in ipairs(SCANDIR.scandir(install_path, true, used_extensions)) do
-              table.insert(result, fname)
-            end
-          end
-        end)
+        for key, value in pairs(vim.fn.globpath("$MASON/share/" .. package_name, filter or "*", true, true)) do
+          table.insert(result, value)
+        end
       end
     end
   end
