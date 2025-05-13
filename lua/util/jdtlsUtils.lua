@@ -119,18 +119,20 @@ end
 
 JdtlsUtils.get_from_mason_registry = function(package_name, filter)
   local success, mason_registry = pcall(require, "mason-registry")
-  local result = {}
   if success then
     local has_package, mason_package = pcall(mason_registry.get_package, package_name)
     if has_package then
       if mason_package:is_installed() then
-        for _, value in pairs(vim.fn.globpath("$MASON/share/" .. package_name, filter or "*", true, true)) do
-          table.insert(result, value)
+        local result = vim.fn.globpath("$MASON/share/" .. package_name, filter or "*", true, true)
+        if #result == 1 then
+          return result[1]
+        else
+          return result
         end
       end
     end
   end
-  return result
+  return {}
 end
 
 JdtlsUtils.addAll = function(target, insertion)
