@@ -130,7 +130,8 @@ function View:close(opts)
 end
 
 function View:render()
-  vim.fn.termopen(vim.fn.expand("$HOME/Applications/lazydocker"), {
+  vim.fn.jobstart({ "/opt/homebrew/bin/lazydocker" }, {
+    term = true,
     on_exit = function()
       self:close()
     end,
