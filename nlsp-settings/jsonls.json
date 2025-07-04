@@ -10,6 +10,14 @@
         "config.json"
       ],
       "url": "file:///home/maassens/.config/nvim/schema/FanControlConfigV3-v1.0.0-schema.json"
+    },
+    {
+      "description": "opencode configuration file",
+      "fileMatch": [
+        "opencode.json",
+        "config.json"
+      ],
+      "url": "file:///home/maassens/.config/nvim/schema/opencode-schema.json"
     }
   ]
 }
