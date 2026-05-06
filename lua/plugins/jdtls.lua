@@ -17,8 +17,8 @@ return {
             default = vim.env.USER ~= "stefan",
           },
           {
-            name = "JavaSE-21",
-            path = vim.env.HOME .. "/.local/lib/jvm-21/",
+            name = "JavaSE-25",
+            path = vim.env.HOME .. "/.local/lib/jvm-25/",
             default = vim.env.USER == "stefan",
           },
         }
@@ -37,6 +37,7 @@ return {
         end
         jdtls_utils.addAll(result, jdtls_utils.get_from_mason_registry("vscode-java-decompiler", "bundles/*.jar"))
         jdtls_utils.addAll(result, jdtls_utils.get_from_mason_registry("java-test", "*.jar"))
+        -- jdtls_utils.addAll(result, jdtls_utils.get_from_mason_registry("java-debug-adapter", "*.jar"))
         return result
       end
       local standard_settings = function()
@@ -121,7 +122,7 @@ return {
           extendedClientCapabilities = extendedClientCapabilities(),
         },
         on_attach = function()
-          local _, _ = pcall(vim.lsp.codelens.refresh)
+          local _, _ = pcall(vim.lsp.codelens.codelens.run)
         end,
         handlers = {
           ["$/progress"] = function() end,
@@ -213,8 +214,8 @@ return {
         end,
 
         -- These depend on nvim-dap, but can additionally be disabled by setting false here.
-        dap = { hotcodereplace = "auto", config_overrides = {} },
-        test = { config_overrides = {} },
+        -- dap = { hotcodereplace = "auto", config_overrides = {} },
+        -- test = { config_overrides = {} },
       }
     end,
   },

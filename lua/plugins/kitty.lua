@@ -1,4 +1,4 @@
-local runs_in_kitty = true -- os.getenv("$TERM") == "xterm-kitty"
+local runs_in_kitty = false -- os.getenv("$TERM") == "xterm-kitty"
 
 return {
   {
