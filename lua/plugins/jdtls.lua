@@ -122,7 +122,7 @@ return {
           extendedClientCapabilities = extendedClientCapabilities(),
         },
         on_attach = function()
-          local _, _ = pcall(vim.lsp.codelens.codelens.run)
+          local _, _ = vim.lsp.codelens.enable(true)
         end,
         handlers = {
           ["$/progress"] = function() end,
