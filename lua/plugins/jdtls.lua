@@ -17,8 +17,8 @@ return {
             default = vim.env.USER ~= "stefan",
           },
           {
-            name = "JavaSE-21",
-            path = vim.env.HOME .. "/.local/lib/jvm-21/",
+            name = "JavaSE-25",
+            path = vim.env.HOME .. "/.local/lib/jvm-25/",
             default = vim.env.USER == "stefan",
           },
         }
@@ -35,8 +35,9 @@ return {
         if sb_success then
           jdtls_utils.addAll(result, spring_boot.java_extensions())
         end
-        jdtls_utils.addAll(result, jdtls_utils.get_from_mason_registry("vscode-java-decompiler", "bundles/*.jar"))
+        jdtls_utils.addAll(result, jdtls_utils.get_from_mason_registry("vscode-java-decompiler", "*.jar"))
         jdtls_utils.addAll(result, jdtls_utils.get_from_mason_registry("java-test", "*.jar"))
+        jdtls_utils.addAll(result, jdtls_utils.get_from_mason_registry("java-debug-adapter", "*.jar"))
         return result
       end
       local standard_settings = function()
@@ -121,7 +122,7 @@ return {
           extendedClientCapabilities = extendedClientCapabilities(),
         },
         on_attach = function()
-          local _, _ = pcall(vim.lsp.codelens.refresh)
+          local _, _ = vim.lsp.codelens.enable(true)
         end,
         handlers = {
           ["$/progress"] = function() end,
