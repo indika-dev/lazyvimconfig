@@ -11,7 +11,7 @@ JdtlsUtils.is_windows = vim.loop.os_uname().version:match("Windows")
 
 JdtlsUtils.jdtls_join = function(...)
   local sep = vim.loop.os_uname().version:match("Windows") and "\\" or "/"
-  local result = table.concat(vim.tbl_flatten({ ... }), sep):gsub(sep .. "+", sep)
+  local result = table.concat(vim.iter({ ... }):flatten():totable(), sep):gsub(sep .. "+", sep)
   return result
 end
 
@@ -20,7 +20,7 @@ JdtlsUtils.escape_wildcards = function(path)
 end
 
 JdtlsUtils.path_join = function(...)
-  return table.concat(vim.tbl_flatten({ ... }), "/")
+  return table.concat(vim.iter({ ... }):flatten():totable(), "/")
 end
 
 JdtlsUtils.path_exists = function(filename)
@@ -96,7 +96,7 @@ JdtlsUtils.search_ancestors = function(startpath, func)
 end
 
 JdtlsUtils.root_pattern = function(...)
-  local patterns = vim.tbl_flatten({ ... })
+  local patterns = vim.iter({ ... }):flatten():totable()
   local function matcher(path)
     for _, pattern in ipairs(patterns) do
       for _, p in ipairs(vim.fn.glob(JdtlsUtils.path_join(JdtlsUtils.escape_wildcards(path), pattern), true, true)) do
