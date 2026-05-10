@@ -67,7 +67,7 @@
   "java.format.enabled": true,
   "java.format.onType.enabled": true,
   "java.home": null,
-  "java.implementationsCodeLens.enabled": true,
+  "java.implementationsCodeLens.enabled": false,
   "java.import.exclusions": [
     "**/node_modules/**",
     "**/.metadata/**",
@@ -114,7 +114,7 @@
   "java.recommendations.dependency.analytics.show": true,
   "java.references.includeAccessors": true,
   "java.references.includeDecompiledSources": true,
-  "java.referencesCodeLens.enabled": true,
+  "java.referencesCodeLens.enabled": false,
   "java.saveActions.organizeImports": true,
   "java.selectionRange.enabled": true,
   "java.server.launchMode": "Hybrid",

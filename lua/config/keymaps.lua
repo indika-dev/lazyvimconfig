@@ -32,29 +32,54 @@ if vim.g.neovide then
   vim.api.nvim_set_keymap("n", "<C-ScrollWheelDown>", "<cmd>:set guifont=-<CR>", { noremap = true, silent = true })
 end
 
--- if os.getenv("$TERM") == "xterm-kitty" then
+-- set keymaps for DevContainers
+vim.api.nvim_set_keymap("n", "<leader>Du", ":DevcontainerUp<CR>", { desc = "DevContainer: up" })
+vim.api.nvim_set_keymap("n", "<leader>Dc", ":DevcontainerConnect<CR>", { desc = "DevContainer: connect" })
+vim.api.nvim_set_keymap("n", "<leader>Dd", ":DevcontainerDown<CR>", { desc = "DevContainer: down" })
 vim.api.nvim_set_keymap(
   "n",
-  "<C-h>",
-  "<cmd>KittyNavigateLeft<CR>",
-  { desc = "Kitty Navigate Left", noremap = true, silent = true }
+  "<leader>De",
+  ":DevcontainerExec direction='vertical' size='40'<CR>",
+  { desc = "DevContainer: exec (vsplit)" }
 )
 vim.api.nvim_set_keymap(
   "n",
-  "<C-j>",
-  "<cmd>KittyNavigateDown<CR>",
-  { desc = "Kitty Navigate Down", noremap = true, silent = true }
+  "<leader>Db",
+  ":DevcontainerExec cmd='cd build && make'<CR>",
+  { desc = "DevContainer: build" }
 )
 vim.api.nvim_set_keymap(
   "n",
-  "<C-k>",
-  "<cmd>KittyNavigateUp<CR>",
-  { desc = "Kitty Navigate Up", noremap = true, silent = true }
+  "<leader>Dt",
+  ":DevcontainerExec cmd='cd build && make test' direction='horizontal'<CR>",
+  { desc = "DevContainer: test" }
 )
-vim.api.nvim_set_keymap(
-  "n",
-  "<C-l>",
-  "<cmd>KittyNavigateRight<CR>",
-  { desc = "Kitty Navigate Right", noremap = true, silent = true }
-)
--- end
+vim.api.nvim_set_keymap("n", "<leader>DT", "<CMD>DevContainerToggle<CR>", { desc = "DevContainer: toggle term" })
+-- end DevContainers
+
+if os.getenv("$TERM") == "xterm-kitty" then
+  vim.api.nvim_set_keymap(
+    "n",
+    "<C-h>",
+    "<cmd>KittyNavigateLeft<CR>",
+    { desc = "Kitty Navigate Left", noremap = true, silent = true }
+  )
+  vim.api.nvim_set_keymap(
+    "n",
+    "<C-j>",
+    "<cmd>KittyNavigateDown<CR>",
+    { desc = "Kitty Navigate Down", noremap = true, silent = true }
+  )
+  vim.api.nvim_set_keymap(
+    "n",
+    "<C-k>",
+    "<cmd>KittyNavigateUp<CR>",
+    { desc = "Kitty Navigate Up", noremap = true, silent = true }
+  )
+  vim.api.nvim_set_keymap(
+    "n",
+    "<C-l>",
+    "<cmd>KittyNavigateRight<CR>",
+    { desc = "Kitty Navigate Right", noremap = true, silent = true }
+  )
+end
