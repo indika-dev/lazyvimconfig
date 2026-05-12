@@ -32,6 +32,31 @@ if vim.g.neovide then
   vim.api.nvim_set_keymap("n", "<C-ScrollWheelDown>", "<cmd>:set guifont=-<CR>", { noremap = true, silent = true })
 end
 
+-- set keymaps for DevContainers
+vim.api.nvim_set_keymap("n", "<leader>Du", ":DevcontainerUp<CR>", { desc = "DevContainer: up" })
+vim.api.nvim_set_keymap("n", "<leader>Dc", ":DevcontainerConnect<CR>", { desc = "DevContainer: connect" })
+vim.api.nvim_set_keymap("n", "<leader>Dd", ":DevcontainerDown<CR>", { desc = "DevContainer: down" })
+vim.api.nvim_set_keymap(
+  "n",
+  "<leader>De",
+  ":DevcontainerExec direction='vertical' size='40'<CR>",
+  { desc = "DevContainer: exec (vsplit)" }
+)
+vim.api.nvim_set_keymap(
+  "n",
+  "<leader>Db",
+  ":DevcontainerExec cmd='cd build && make'<CR>",
+  { desc = "DevContainer: build" }
+)
+vim.api.nvim_set_keymap(
+  "n",
+  "<leader>Dt",
+  ":DevcontainerExec cmd='cd build && make test' direction='horizontal'<CR>",
+  { desc = "DevContainer: test" }
+)
+vim.api.nvim_set_keymap("n", "<leader>DT", "<CMD>DevContainerToggle<CR>", { desc = "DevContainer: toggle term" })
+-- end DevContainers
+
 if os.getenv("$TERM") == "xterm-kitty" then
   vim.api.nvim_set_keymap(
     "n",
