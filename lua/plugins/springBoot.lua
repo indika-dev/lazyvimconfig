@@ -1,8 +1,7 @@
 return {
   {
     "JavaHello/spring-boot.nvim",
-    dev = { true },
-    ft = { "jproperties", "java" },
+    ft = { "jproperties", "yaml" },
     opts = function()
       require("mason").setup()
       local success, mason_registry = pcall(require, "mason-registry")
