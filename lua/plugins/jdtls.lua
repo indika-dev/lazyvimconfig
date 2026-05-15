@@ -122,7 +122,7 @@ return {
           extendedClientCapabilities = extendedClientCapabilities(),
         },
         on_attach = function()
-          local _, _ = vim.lsp.codelens.enable(false)
+          local _, _ = pcall(vim.lsp.codelens.enable, false)
         end,
         handlers = {
           ["$/progress"] = function() end,
@@ -214,8 +214,8 @@ return {
         end,
 
         -- These depend on nvim-dap, but can additionally be disabled by setting false here.
-        dap = { hotcodereplace = "auto", config_overrides = {} },
-        test = { config_overrides = {} },
+        -- dap = { hotcodereplace = "auto", config_overrides = {} },
+        -- test = { config_overrides = {} },
       }
     end,
   },

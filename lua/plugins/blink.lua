@@ -1,6 +1,5 @@
 return {}
-
--- return {
+--
 --   {
 --     "saghen/blink.cmp",
 --
@@ -27,18 +26,8 @@ return {}
 --         completion = { trigger = { prefetch_on_insert = false } },
 --       },
 --       sources = {
---         default = { "lsp", "path", "buffer", "snippets" }, -- , "minuet" },
---         providers = {
---           minuet = {
---             name = "minuet",
---             module = "minuet.blink",
---             async = true,
---             -- Should match minuet.config.request_timeout * 1000,
---             -- since minuet.config.request_timeout is in seconds
---             timeout_ms = 3000,
---             score_offset = 50, -- Gives minuet higher priority among suggestions
---           },
---         },
+--         default = { "lsp", "path", "buffer", "snippets" },
+--         providers = {},
 --       },
 --       -- experimental signature help support
 --       signature = { enabled = true },
