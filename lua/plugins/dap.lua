@@ -1,3 +1,9 @@
+local function get_debug_adapter()
+  local mason_registry = require("mason-registry")
+  local debug_adapter = mason_registry.get_package("kotlin-debug-adapter")
+  return debug_adapter:get_install_path() .. "/adapter/bin/kotlin-debug-adapter"
+end
+
 return {
   {
     "mfussenegger/nvim-dap",
@@ -7,7 +13,7 @@ return {
       if not dap.adapters.kotlin then
         dap.adapters.kotlin = {
           type = "executable",
-          command = "kotlin-debug-adapter",
+          command = get_debug_adapter(),
           options = { auto_continue_if_many_stopped = false },
         }
       end
