@@ -1,5 +1,3 @@
-local SCANDIR = require("util.scandir")
-
 -- originally taken from lspconfig
 local JdtlsUtils = {}
 
@@ -10,7 +8,9 @@ end
 JdtlsUtils.is_windows = vim.loop.os_uname().version:match("Windows")
 
 JdtlsUtils.jdtls_join = function(...)
-  local sep = vim.loop.os_uname().version:match("Windows") and "\\" or "/"
+  if vim.fs.joinpath then
+    return vim.fs.joinpath(...)
+  end
   local result = table.concat(vim.iter({ ... }):flatten():totable(), sep):gsub(sep .. "+", sep)
   return result
 end
@@ -109,6 +109,22 @@ JdtlsUtils.root_pattern = function(...)
   return function(startpath)
     startpath = JdtlsUtils.strip_archive_subpath(startpath)
     return JdtlsUtils.search_ancestors(startpath, matcher)
+  end
+end
+
+JdtlsUtils.find_root = function(markers, source)
+  source = source or vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf())
+  local dirname = vim.fn.fnamemodify(source, ":p:h")
+  local getparent = function(p)
+    return vim.fn.fnamemodify(p, ":h")
+  end
+  while getparent(dirname) ~= dirname do
+    for _, marker in ipairs(markers) do
+      if vim.loop.fs_stat(JdtlsUtils.jdtls_join(dirname, marker)) then
+        return dirname
+      end
+    end
+    dirname = getparent(dirname)
   end
 end
 
