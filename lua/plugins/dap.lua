@@ -10,6 +10,13 @@ return {
     opts = function()
       local dap = require("dap")
 
+      dap.listeners.after.event_initialized["dapui_config"] = function()
+        -- Wartet 100ms, bevor die UI geöffnet wird, um den Buffer-Bug zu umgehen
+        vim.schedule(function()
+          require("dapui").open()
+        end)
+      end
+
       if not dap.adapters.kotlin then
         dap.adapters.kotlin = {
           type = "executable",

@@ -1,6 +1,7 @@
 return {
   {
     "nvim-neotest/neotest",
+    event = "LspAttach",
     dependencies = {
       "rcasia/neotest-java",
       "atm1020/neotest-jdtls",
