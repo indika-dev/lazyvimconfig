@@ -11,7 +11,7 @@ return {
     lazy = false,
   },
   {
-    "indika-dev/kotlin.nvim",
+    "AlexandrosAlexiou/kotlin.nvim",
     ft = { "kotlin" },
     dependencies = {
       "oil.nvim",
