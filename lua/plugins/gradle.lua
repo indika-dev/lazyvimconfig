@@ -10,7 +10,7 @@ return {
       gradle_executable = "./gradlew",
     }, -- options, see default configuration
     keys = {
-      { "<leader>G", desc = "+Gradle", mode = { "n", "v" } },
+      { "<leader>G", desc = "+gradle", mode = { "n", "v" }, icon = " " },
       { "<leader>Gg", "<cmd>Gradle<cr>", desc = "Gradle Projects" },
       { "<leader>Gf", "<cmd>GradleFavorites<cr>", desc = "Gradle Favorite Commands" },
     },

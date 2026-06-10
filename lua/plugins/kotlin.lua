@@ -14,10 +14,10 @@ return {
     "indika-dev/kotlin.nvim",
     ft = { "kotlin" },
     dependencies = {
-      "mason.nvim",
-      "mason-lspconfig.nvim",
+      -- "mason.nvim",
+      -- "mason-lspconfig.nvim",
       "oil.nvim",
-      "trouble.nvim",
+      -- "trouble.nvim",
       -- nvim-dap is NOT a kotlin.nvim dependency. Install and configure it
       -- separately (signs, keymaps, optionally nvim-dap-ui). kotlin.nvim only
       -- registers a `kotlin` adapter and the `:KotlinDebug` command on top.
