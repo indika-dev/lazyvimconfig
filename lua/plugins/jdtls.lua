@@ -92,7 +92,7 @@ return {
             },
           },
         }
-        -- result = vim.tbl_deep_extend("keep", result, vim.lsp.protocol.make_client_capabilities())
+        result = vim.tbl_deep_extend("keep", result, vim.lsp.protocol.make_client_capabilities())
         if status_blink then
           result = vim.tbl_deep_extend("keep", result, blink_cmp.get_lsp_capabilities())
         end
