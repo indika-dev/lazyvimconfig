@@ -30,12 +30,27 @@ vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.opt.spelllang = "en_us"
 vim.opt.spell = true
 
+local local_llm_configs = {
+  gemma4 = {
+    default = { provider = "ollama", model = "SetneufPT/Gemma4-12B_Q4_64K_16GB-GPU:latest" },
+    medium = { provider = "ollama", model = "SetneufPT/Gemma4-12B_Q4_64K_16GB-GPU:latest" },
+    small = { provider = "ollama", model = "gemma4:e2b" },
+  },
+  qwen = {
+    default = { provider = "ollama", model = "pdurugyan/qwen3.5-9b-deepseek-v4-flash-Q4_K_M-v_2:latest" },
+    medium = { provider = "ollama", model = "pdurugyan/qwen3.5-9b-deepseek-v4-flash-Q4_K_M-v_2:latest" },
+    small = { provider = "ollama", model = "qwen2.5-coder:7b-instruct" },
+  },
+}
+
 vim.g.pi = {
   cmd = vim.env.HOME .. "/.nvm/versions/node/v24.15.0/bin/pi",
-  default_gemma4_config = { provider = "ollama", model = "SetneufPT/Gemma4-12B_Q4_64K_16GB-GPU:latest" },
-  default_qwen_config = { provider = "ollama", model = "pdurugyan/qwen3.5-9b-deepseek-v4-flash-Q4_K_M-v_2:latest" },
-  medium_gemma4_config = { provider = "ollama", model = "SetneufPT/Gemma4-12B_Q4_64K_16GB-GPU:latest" },
-  medium_qwen_config = { provider = "ollama", model = "pdurugyan/qwen3.5-9b-deepseek-v4-flash-Q4_K_M-v_2:latest" },
-  small_gemma4_config = { provider = "ollama", model = "gemma4:e2b" },
-  small_qwen_config = { provider = "ollama", model = "qwen2.5-coder:7b-instruct" },
+  default_llm_config = local_llm_configs.gemma4.default,
+  medium_llm_config = local_llm_configs.gemma4.medium,
+  small_llm_config = local_llm_configs.gemma4.small,
+  codecompanion = {
+    cmd_model = local_llm_configs.gemma4.default,
+    chat_model = local_llm_configs.gemma4.default,
+    inline_model = local_llm_configs.gemma4.default,
+  },
 }
