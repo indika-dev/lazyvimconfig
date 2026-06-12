@@ -30,12 +30,12 @@ vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.opt.spelllang = "en_us"
 vim.opt.spell = true
 
-if vim.fn.has("wsl") == 1 then
-  vim.opt.clipboard = "unnamedplus"
-  vim.api.nvim_create_autocmd("TextYankPost", {
-    group = vim.api.nvim_create_augroup("Yank", { clear = true }),
-    callback = function()
-      vim.fn.system("clip.exe", vim.fn.getreg('"'))
-    end,
-  })
-end
+vim.g.pi = {
+  cmd = vim.env.HOME .. "/.nvm/versions/node/v24.15.0/bin/pi",
+  default_gemma4_config = { provider = "ollama", model = "SetneufPT/Gemma4-12B_Q4_64K_16GB-GPU:latest" },
+  default_qwen_config = { provider = "ollama", model = "pdurugyan/qwen3.5-9b-deepseek-v4-flash-Q4_K_M-v_2:latest" },
+  medium_gemma4_config = { provider = "ollama", model = "SetneufPT/Gemma4-12B_Q4_64K_16GB-GPU:latest" },
+  medium_qwen_config = { provider = "ollama", model = "pdurugyan/qwen3.5-9b-deepseek-v4-flash-Q4_K_M-v_2:latest" },
+  small_gemma4_config = { provider = "ollama", model = "gemma4:e2b" },
+  small_qwen_config = { provider = "ollama", model = "qwen2.5-coder:7b-instruct" },
+}

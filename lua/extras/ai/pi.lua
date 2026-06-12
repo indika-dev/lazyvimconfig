@@ -7,13 +7,11 @@ return {
       -- Any ACP-compatible provider works. Built-in: "claude-agent-acp" | "gemini-acp" | "codex-acp" | "opencode-acp" | "cursor-acp" | "copilot-acp" | "auggie-acp" | "mistral-vibe-acp" | "cline-acp" | "goose-acp" | "kiro-acp" | "pi-acp"
       provider = "pi-acp", -- setting the name here is all you need to get started
       ["pi-acp"] = {
-        command = "/home/stefan/.nvm/versions/node/v24.15.0/bin/pi",
-        -- initial_model = "gemma4:12b-it-q4_K_M",
-        initial_model = "qwen3.5:9b",
+        command = vim.g.pi.cmd,
+        initial_model = vim.g.pi.default_gemma4_config.model,
         default_thought_level = "high",
       },
     },
-
     keys = {
       { "<leader>p", "", desc = "+acp", mode = { "n", "v" } },
       {
@@ -70,10 +68,9 @@ return {
   {
     "carderne/pi-nvim",
     -- mainly send data to a pi session
-    enabled = true,
     keys = {
       { "<leader>a", "", desc = "+ai", mode = { "n", "v" } },
-      { "<leader>ao", mode = { "n", "v" }, ":Pi<CR>", desc = "Open the Send to pi dialog" },
+      { "<leader>ao", mode = { "n", "v" }, ":Pi<CR>", desc = "Open the 'Send to pi' dialog" },
       { "<leader>at", mode = { "n" }, ":PiSend<CR>", desc = "Type a prompt and send to pi" },
       { "<leader>af", mode = { "n" }, ":PiSendFile<CR>", desc = "Send current file path + prompt" },
       { "<leader>av", mode = { "v" }, ":PiSendSelection<CR>", desc = "Send visual selection + prompt" },
@@ -88,8 +85,8 @@ return {
   },
   {
     "pablopunk/pi.nvim",
-    enabled = true,
     keys = {
+      { "<leader>a", "", desc = "+ai", mode = { "n", "v" } },
       -- Ask pi with the current buffer as context
       { "<leader>aa", ":PiAsk<CR>", desc = "Ask pi", mode = "n" },
 
@@ -97,9 +94,9 @@ return {
       { mode = "v", "<leader>ai", ":PiAskSelection<CR>", desc = "Ask pi (selection)" },
     },
     opts = {
-      binary = "~/.nvm/versions/node/v24.15.0/bin/pi", -- or { "env", "FOO=1", "pi-wrapper" }
-      provider = "ollama",
-      model = "qwen3.5:9b", -- openrouter/free
+      binary = vim.g.pi.cmd, -- or { "env", "FOO=1", "pi-wrapper" }
+      provider = vim.g.pi.default_gemma4_config.provider,
+      model = vim.g.pi.default_gemma4_config.model, -- openrouter/free
       thinking = "high", -- be careful, thinking is time-consuming, it's not a great experience if you want simplicity
       hideThinkingBlock = true,
       system_prompt = "You are a helpful assistant.",
@@ -121,42 +118,8 @@ return {
     },
   },
   {
-    "nomnivore/ollama.nvim",
-    enabled = false,
-    -- dependencies = {
-    --   "nvim-lua/plenary.nvim",
-    -- },
-
-    -- All the user commands added by the plugin
-    cmd = { "Ollama", "OllamaModel", "OllamaServe", "OllamaServeStop" },
-
-    keys = {
-      -- Sample keybind for prompt menu. Note that the <c-u> is important for selections to work properly.
-      {
-        "<leader>ao",
-        ":<c-u>lua require('ollama').prompt()<cr>",
-        desc = "ollama prompt",
-        mode = { "n", "v" },
-      },
-
-      -- Sample keybind for direct prompting. Note that the <c-u> is important for selections to work properly.
-      {
-        "<leader>aG",
-        ":<c-u>lua require('ollama').prompt('Generate_Code')<cr>",
-        desc = "ollama Generate Code",
-        mode = { "n", "v" },
-      },
-    },
-
-    ---@type Ollama.Config
-    opts = {
-      -- your configuration overrides
-    },
-  },
-  {
     -- The GitHub repository for the codecompanion.nvim plugin.
     "olimorris/codecompanion.nvim",
-    enabled = true,
     keys = {
       { "<leader>p", "", desc = "+acp", mode = { "n" } },
       { "<leader>pp", mode = { "n" }, ":CodeCompanion<CR>", desc = "Enter a Prompt" },
@@ -176,21 +139,12 @@ return {
       -- for different categories of actions within the plugin.
       strategies = {
         -- Configures the default model for running custom prompts.
-        cmd = {
-          adapter = "ollama",
-          model = "gemma4:12b-it-q4_K_M",
-        },
+        cmd = vim.g.pi.default_gemma4_config,
         -- Configures the model for the interactive chat window (:CompanionChat).
-        chat = {
-          adapter = "ollama",
-          model = "gemma4:12b-it-q4_K_M",
-        },
+        chat = vim.g.pi.default_gemma4_config,
         -- Configures the model for any action that modifies code directly in your buffer
         -- using the 'inline' strategy.
-        inline = {
-          adapter = "ollama",
-          model = "gemma4:12b-it-q4_K_M",
-        },
+        inline = vim.g.pi.default_gemma4_config,
       },
       -- The 'prompt_library' is where you define your own reusable, custom AI commands.
       prompt_library = {
