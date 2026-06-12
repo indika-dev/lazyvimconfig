@@ -78,20 +78,29 @@ vim.api.nvim_create_user_command("LazyPodman", function()
   require("util.lazypodman").toggle()
 end, {})
 
--- Automatisches Entfernen von ^M (CR) beim Einfügen von Text
-vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI" }, {
-  group = vim.api.nvim_create_augroup("FixWindowsPaste", { clear = true }),
-  callback = function()
-    if vim.bo.modifiable then
-      -- Speichert die aktuelle Cursor-Position
-      local view = vim.fn.winsaveview()
-      -- Ersetzt alle \r (Carriage Returns) geräuschlos
-      vim.cmd([[silent! %s/\r//g]])
-      -- Stellt die Cursor-Position wieder her
-      vim.fn.winrestview(view)
-    end
-  end,
-})
+if vim.fn.has("wsl") == 1 then
+  vim.opt.clipboard = "unnamedplus"
+  vim.api.nvim_create_autocmd("TextYankPost", {
+    group = vim.api.nvim_create_augroup("Yank", { clear = true }),
+    callback = function()
+      vim.fn.system("clip.exe", vim.fn.getreg('"'))
+    end,
+  })
+  -- Automatisches Entfernen von ^M (CR) beim Einfügen von Text
+  vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI" }, {
+    group = vim.api.nvim_create_augroup("FixWindowsPaste", { clear = true }),
+    callback = function()
+      if vim.bo.modifiable then
+        -- Speichert die aktuelle Cursor-Position
+        local view = vim.fn.winsaveview()
+        -- Ersetzt alle \r (Carriage Returns) geräuschlos
+        vim.cmd([[silent! %s/\r//g]])
+        -- Stellt die Cursor-Position wieder her
+        vim.fn.winrestview(view)
+      end
+    end,
+  })
+end
 
 -- vim.api.nvim_create_autocmd("ColorScheme", {
 --   pattern = "kanagawa",
