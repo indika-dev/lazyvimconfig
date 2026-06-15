@@ -8,7 +8,7 @@ return {
       provider = "pi-acp", -- setting the name here is all you need to get started
       ["pi-acp"] = {
         command = vim.g.pi.cmd,
-        initial_model = vim.g.pi.default_llm_config.model,
+        initial_model = vim.g.pi.default_agentic_config.model,
         default_thought_level = "high",
       },
     },
@@ -95,8 +95,8 @@ return {
     },
     opts = {
       binary = vim.g.pi.cmd, -- or { "env", "FOO=1", "pi-wrapper" }
-      provider = vim.g.pi.default_llm_config.provider,
-      model = vim.g.pi.default_llm_config.model, -- openrouter/free
+      provider = vim.g.pi.default_askpi_config.provider,
+      model = vim.g.pi.default_askpi_config.model, -- openrouter/free
       thinking = "high", -- be careful, thinking is time-consuming, it's not a great experience if you want simplicity
       hideThinkingBlock = true,
       system_prompt = "You are a helpful assistant.",

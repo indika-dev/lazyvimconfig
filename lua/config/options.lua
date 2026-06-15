@@ -40,17 +40,17 @@ local local_llm_configs = {
     default = { provider = "ollama", model = "pdurugyan/qwen3.5-9b-deepseek-v4-flash-Q4_K_M-v_2:latest" },
     medium = { provider = "ollama", model = "pdurugyan/qwen3.5-9b-deepseek-v4-flash-Q4_K_M-v_2:latest" },
     small = { provider = "ollama", model = "qwen2.5-coder:7b-instruct" },
+    coder = { provider = "ollama", model = "ertghiu256/qwen3-4b-code-reasoning:latest" },
   },
 }
 
 vim.g.pi = {
   cmd = vim.env.HOME .. "/.nvm/versions/node/v24.15.0/bin/pi",
-  default_llm_config = local_llm_configs.gemma4.default,
-  medium_llm_config = local_llm_configs.gemma4.medium,
-  small_llm_config = local_llm_configs.gemma4.small,
+  default_agentic_config = local_llm_configs.qwen.coder,
+  default_askpi_config = local_llm_configs.qwen.coder,
   codecompanion = {
-    cmd_model = local_llm_configs.gemma4.default,
-    chat_model = local_llm_configs.gemma4.default,
-    inline_model = local_llm_configs.gemma4.default,
+    cmd_model = local_llm_configs.qwen.coder,
+    chat_model = local_llm_configs.qwen.coder,
+    inline_model = local_llm_configs.qwen.coder,
   },
 }
