@@ -1,9 +1,3 @@
-local function get_debug_adapter()
-  local mason_registry = require("mason-registry")
-  local debug_adapter = mason_registry.get_package("kotlin-debug-adapter")
-  return debug_adapter:get_install_path() .. "/adapter/bin/kotlin-debug-adapter"
-end
-
 return {
   {
     "mfussenegger/nvim-dap",
@@ -17,32 +11,7 @@ return {
         end)
       end
 
-      if not dap.adapters.kotlin then
-        dap.adapters.kotlin = {
-          type = "executable",
-          command = get_debug_adapter(),
-          options = { auto_continue_if_many_stopped = false },
-        }
-      end
-
       dap.configurations.kotlin = {
-        {
-          type = "kotlin",
-          request = "launch",
-          name = "This file",
-          -- may differ, when in doubt, whatever your project structure may be,
-          -- it has to correspond to the class file located at `build/classes/`
-          -- and of course you have to build before you debug
-          mainClass = function()
-            local root = vim.fs.find("src", { path = vim.uv.cwd(), upward = true, stop = vim.env.HOME })[1] or ""
-            local fname = vim.api.nvim_buf_get_name(0)
-            -- src/main/kotlin/websearch/Main.kt -> websearch.MainKt
-            return fname:gsub(root, ""):gsub("main/kotlin/", ""):gsub(".kt", "Kt"):gsub("/", "."):sub(2, -1)
-          end,
-          projectRoot = "${workspaceFolder}",
-          jsonLogFile = "",
-          enableJsonLogging = false,
-        },
         {
           -- Use this for unit tests
           -- First, run
@@ -56,6 +25,16 @@ return {
           projectRoot = vim.fn.getcwd,
           hostName = "localhost",
           timeout = 2000,
+        },
+        {
+          type = "kotlin",
+          name = "launch - kotlin",
+          request = "launch",
+          projectRoot = vim.fn.getcwd() .. "/app",
+          mainClass = function()
+            -- return vim.fn.input("Path to main class > ", "myapp.sample.app.AppKt", "file")
+            return vim.fn.input("Path to main class > ", "", "file")
+          end,
         },
       }
 

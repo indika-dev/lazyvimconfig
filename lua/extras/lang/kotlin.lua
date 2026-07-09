@@ -3,6 +3,12 @@ local function get_lsp_fallback(bufnr)
   return always_use_lsp and "always" or true
 end
 
+local function get_debug_adapter()
+  local mason_registry = require("mason-registry")
+  local debug_adapter = mason_registry.get_package("kotlin-debug-adapter")
+  return debug_adapter:get_install_path() .. "/adapter/bin/kotlin-debug-adapter"
+end
+
 return {
   recommended = function()
     return LazyVim.extras.wants({
@@ -29,10 +35,10 @@ return {
     lazy = false,
   },
   {
-    "indika-dev/kotlin.nvim",
+    "AlexandrosAlexiou/kotlin.nvim",
     ft = "kotlin",
-    dev = true,
-    dir = "/home/stefan/Projekte/kotlin.nvim",
+    -- dev = true,
+    -- dir = "/home/stefan/Projekte/kotlin.nvim",
     opts = {
       root_markers = {
         ".git",
@@ -110,6 +116,20 @@ return {
       -- },
     },
   },
+  {
+    "mfussenegger/nvim-dap",
+    opts = function()
+      local dap = require("dap")
+
+      if not dap.adapters.kotlin then
+        dap.adapters.kotlin = {
+          type = "executable",
+          command = get_debug_adapter(),
+          options = { auto_continue_if_many_stopped = false },
+        }
+      end
+    end,
+  },
   -- Add packages(linting, debug adapter)
   {
     "mason-org/mason.nvim",
@@ -136,25 +156,6 @@ return {
     dependencies = "mason-org/mason.nvim",
     opts = {
       linters_by_ft = { kotlin = { "detekt" } },
-      linters = {
-        detekt = {
-          cmd = "detekt",
-          stdin = false, -- or false if it doesn't support content input via stdin. In that case the filename is automatically added to the arguments.
-          args = { "-bp " }, -- list of arguments. Can contain functions with zero arguments that will be evaluated once the linter is used.
-          stream = "stdout", -- ('stdout' | 'stderr' | 'both') configure the stream to which the linter outputs the linting result.
-          ignore_exitcode = true, -- set this to true if the linter exits with a code != 0 and that's considered normal.
-          env = nil, -- custom environment table to use with the external process. Note that this replaces the *entire* environment, it is not additive.
-          parser = require("lint.parser").from_pattern(
-            "([^:]+):(%d+):(%d+): ([^[]+) %[(.+)%]",
-            { "file", "lnum", "col", "message", "rule" },
-            nil,
-            {
-              ["source"] = "detekt",
-              ["severity"] = vim.diagnostic.severity.WARN,
-            }
-          ),
-        },
-      },
     },
   },
   -- Add formatting
@@ -163,6 +164,14 @@ return {
     optional = true,
     opts = {
       formatters_by_ft = { kotlin = { "ktfmt" } },
+      formatters = {
+        ktfmt = {
+          prepend_args = {
+            -- "--enable-editorconfig",
+            "--kotlinlang-style",
+          },
+        },
+      },
     },
     -- -- This option will handle creating the autocmd and saving for you
     -- format_after_save = function(bufnr)

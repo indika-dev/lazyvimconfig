@@ -30,27 +30,26 @@ vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.opt.spelllang = "en_us"
 vim.opt.spell = true
 
-local local_llm_configs = {
-  gemma4 = {
-    default = { provider = "ollama", model = "SetneufPT/Gemma4-12B_Q4_64K_16GB-GPU:latest" },
-    medium = { provider = "ollama", model = "SetneufPT/Gemma4-12B_Q4_64K_16GB-GPU:latest" },
-    small = { provider = "ollama", model = "gemma4:e2b" },
-  },
-  qwen = {
-    default = { provider = "ollama", model = "pdurugyan/qwen3.5-9b-deepseek-v4-flash-Q4_K_M-v_2:latest" },
-    medium = { provider = "ollama", model = "pdurugyan/qwen3.5-9b-deepseek-v4-flash-Q4_K_M-v_2:latest" },
-    small = { provider = "ollama", model = "qwen2.5-coder:7b-instruct" },
-    coder = { provider = "ollama", model = "ertghiu256/qwen3-4b-code-reasoning:latest" },
-  },
-}
-
 vim.g.pi = {
   cmd = vim.env.HOME .. "/.nvm/versions/node/v24.15.0/bin/pi",
-  default_agentic_config = local_llm_configs.qwen.coder,
-  default_askpi_config = local_llm_configs.qwen.coder,
-  codecompanion = {
-    cmd_model = local_llm_configs.qwen.coder,
-    chat_model = local_llm_configs.qwen.coder,
-    inline_model = local_llm_configs.qwen.coder,
+  standard_llm = { provider = "llama-cpp", model = "ornith-1.0-9b-Q4_K_M", context_length = 65536 },
+  local_llms = {
+    gemma4_26b = { provider = "llama-cpp", model = "gemma-4-26B-A4B-it-MXFP4_MOE", context_length = 65536 },
+    qwen36_35B = { provider = "llama-cpp", model = "Qwen3.6-35B-A3B-MXFP4_MOE", context_length = 65536 },
+    qwen35_14B = {
+      provider = "llama-cpp",
+      model = "Qwen3.5-14B-A3B-Claude-Opus-Reasoning-Distilled-4.6-MXFP4_MOE",
+      context_length = 65536,
+    },
+    gemma4_12b = { provider = "llama-cpp", model = "gemma-4-12b-it-qat-q4_0", context_length = 65536 },
+    qwen35_9B = { provider = "llama-cpp", model = "Qwen3.5-9B-Q4_K_M", context_length = 65536 },
+    qwen35_8B = { provider = "llama-cpp", model = "Qwen3-8B-UD-Q4_K_XL", context_length = 65536 },
+    qwythos35_9b = {
+      provider = "llama-cpp",
+      model = "Qwythos-9B-Claude-Mythos-5-1M-MTP-Q4_K_M",
+      context_length = 65536,
+    },
+    ornith10_9b = { provider = "llama-cpp", model = "ornith-1.0-9b-Q4_K_M", context_length = 65536 },
+    falconh1r_7b = { provider = "llama-cpp", model = "Falcon-H1R-7B-UD-Q4_K_XL", context_length = 65536 },
   },
 }

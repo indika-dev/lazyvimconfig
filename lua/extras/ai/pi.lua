@@ -8,8 +8,8 @@ return {
       provider = "pi-acp", -- setting the name here is all you need to get started
       ["pi-acp"] = {
         command = vim.g.pi.cmd,
-        initial_model = vim.g.pi.default_agentic_config.model,
-        default_thought_level = "high",
+        initial_model = vim.g.pi.standard_llm.model,
+        default_thought_level = "medium",
       },
     },
     keys = {
@@ -95,9 +95,9 @@ return {
     },
     opts = {
       binary = vim.g.pi.cmd, -- or { "env", "FOO=1", "pi-wrapper" }
-      provider = vim.g.pi.default_askpi_config.provider,
-      model = vim.g.pi.default_askpi_config.model, -- openrouter/free
-      thinking = "high", -- be careful, thinking is time-consuming, it's not a great experience if you want simplicity
+      provider = vim.g.pi.standard_llm.provider,
+      model = vim.g.pi.standard_llm.model, -- openrouter/free
+      thinking = "medium", -- be careful, thinking is time-consuming, it's not a great experience if you want simplicity
       hideThinkingBlock = true,
       system_prompt = "You are a helpful assistant.",
       append_system_prompt = "Always respond concisely.",
@@ -139,12 +139,12 @@ return {
       -- for different categories of actions within the plugin.
       strategies = {
         -- Configures the default model for running custom prompts.
-        cmd = vim.g.pi.codecompanion.cmd_model,
+        cmd = vim.g.pi.standard_llm.model,
         -- Configures the model for the interactive chat window (:CompanionChat).
-        chat = vim.g.pi.codecompanion.chat_model,
+        chat = vim.g.pi.standard_llm.model,
         -- Configures the model for any action that modifies code directly in your buffer
         -- using the 'inline' strategy.
-        inline = vim.g.pi.codecompanion.inline_model,
+        inline = vim.g.pi.standard_llm.model,
       },
       -- The 'prompt_library' is where you define your own reusable, custom AI commands.
       prompt_library = {
